@@ -1,14 +1,33 @@
 import React from 'react'
 import annyang from 'annyang'
+import { HostedModel } from '@runwayml/hosted-models'
 import './App.css';
 
 const commands = {
   'hello': () => console.log('called')
 }
 
+const model = new HostedModel({
+  url: 'https://sam-essays-1.hosted-models.runwayml.cloud/v1/',
+  token: 'Pb1p+Jfd0VPzBzFmgajitg=='
+})
+
 class App extends React.Component {
   state = {
-    message: 'Annyang'
+    message: ''
+  }
+
+  queryModel = (prompt = '') => {
+    console.log('called')
+    model.query({
+      prompt: this.state.message + prompt,
+      max_characters: 140
+    }).then((result) => {
+      console.log(result)
+      this.setState({
+        message: result.generated_text
+      })
+    })
   }
 
   componentDidMount() {
@@ -16,17 +35,18 @@ class App extends React.Component {
     annyang.addCommands(commands)
     annyang.start()
     annyang.addCallback('result', (phrases) => {
-      console.log('phrase')
-      this.setState({
-        message: phrases[0]
-      })
+      let prompt = phrases[0] + ' '
+      // this.setState({
+      //   message: this.state.message + prompt
+      // })
+      this.queryModel(prompt)
     })
   }
   render() {
     const { message } = this.state
     return (
       <div className="App">
-        <h1>{message}</h1>
+        <p>{message}</p>
       </div>
     )
   }
