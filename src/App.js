@@ -8,7 +8,7 @@ const commands = {
   'hello': () => console.log('called')
 }
 const model = new HostedModel({
-  url: 'https://sam-essays-1.hosted-models.runwayml.cloud/v1/',
+  url: 'https://sam-essays-1.hosted-models.runwayml.cloud/v1',
   token: 'Pb1p+Jfd0VPzBzFmgajitg=='
 })
 const speech = axios.create()
@@ -17,28 +17,39 @@ speech.defaults.timeout = 0
 
 class App extends React.Component {
   state = {
-    message: ''
+    message: '',
+    prompt: ''
   }
 
-  queryModel = (prompt = '') => {
+  queryModel = async () => {
     console.log('called')
+    const { message, prompt } = this.state
+    console.log(model.isAwake())
     model.query({
-      prompt: this.state.message + prompt + ' ',
+      prompt: message + prompt + ' ',
       max_characters: 140
     }).then((result) => {
       console.log(result)
-      let message = result.generated_text.substring(0, result.generated_text.lastIndexOf(' ')) + ' '
+      let nextMessage = result.generated_text.substring(0, result.generated_text.lastIndexOf(' ')) + ' '
       this.setState({
-        message
+        prompt: '',
+        message: nextMessage
       })
-      this.speakMessage()
+      console.log('prompt', prompt)
+      this.speakMessage({
+        omit: message + prompt
+      })
     })
   }
 
-  speakMessage = async () => {
+  speakMessage = async (options = { omit: null }) => {
     const { message } = this.state
+    var input = message
+    if (options.omit) {
+      input = message.replace(options.omit, '')
+    }
     const { data } = await speech.post('/speak', {
-      text: message,
+      text: input,
       voice: 'Matthew'
     })
     if (data.url) {
@@ -57,18 +68,25 @@ class App extends React.Component {
     annyang.addCommands(commands)
     annyang.start()
     annyang.addCallback('result', (phrases) => {
-      let prompt = phrases[0]
-      // this.setState({
-      //   message: this.state.message + prompt
-      // })
-      this.queryModel(prompt)
+      this.setState({
+        prompt: phrases[0]
+      })
+      this.queryModel()
     })
   }
   render() {
-    const { message } = this.state
+    const { message, prompt } = this.state
     return (
       <div className="App">
-        <button onClick={() => this.queryModel()}>Submit</button>
+        <form onSubmit={(event) => { this.queryModel(); event.preventDefault() }}>
+          <input
+            type="text"
+            value={prompt}
+            onChange={(event) => this.setState({ prompt: event.target.value })}
+            onKeyPress={(event) => { if (event.key === 13) this.queryModel() }}
+          />
+          <input type="submit" value="Submit" />
+        </form>
         <button onClick={() => this.speakMessage()}>Speak</button>
         <br />
         <p>{message}</p>
