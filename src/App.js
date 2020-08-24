@@ -9,7 +9,7 @@ const commands = {
 }
 const model = new HostedModel({
   url: 'https://sam-essays-1.hosted-models.runwayml.cloud/v1',
-  token: 'Pb1p+Jfd0VPzBzFmgajitg=='
+  token: 'grcmC+iEn7w8MLhwmSEk7g=='
 })
 const speech = axios.create()
 speech.defaults.baseURL = "https://w8ylvqkryk.execute-api.us-east-1.amazonaws.com/dev/"
@@ -66,7 +66,7 @@ class App extends React.Component {
   componentDidMount() {
     annyang.debug()
     annyang.addCommands(commands)
-    annyang.start()
+    // annyang.start()
     annyang.addCallback('result', (phrases) => {
       this.setState({
         prompt: phrases[0]
