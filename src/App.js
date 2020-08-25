@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
+import './App.css'
 import annyang from 'annyang'
 import { HostedModel } from '@runwayml/hosted-models'
-import './App.css';
 import axios from 'axios'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.bubble.css'
+import Sidebar from './components/Sidebar'
+import theme from './constants/theme'
 
 const commands = {
   'hello': () => console.log('called')
@@ -19,6 +23,12 @@ class App extends React.Component {
   state = {
     message: '',
     prompt: ''
+  }
+
+  onChange = (content, delta, source, editor) => {
+    this.setState({
+      prompt: content
+    })
   }
 
   queryModel = async () => {
@@ -76,17 +86,48 @@ class App extends React.Component {
   }
   render() {
     const { message, prompt } = this.state
+    const documents = [
+      {
+        title: 'Hello World',
+        isOpen: true,
+        id: 'abcdef'
+      },
+      {
+        title: 'Document two',
+        isOpen: false,
+        id: 'abcdef'
+      },
+      {
+        title: 'The Communist Manifesto',
+        isOpen: false,
+        id: 'abcdef'
+      },
+    ]
     return (
       <div className="App">
-        <form onSubmit={(event) => { this.queryModel(); event.preventDefault() }}>
-          <input
-            type="text"
-            value={prompt}
-            onChange={(event) => this.setState({ prompt: event.target.value })}
-            onKeyPress={(event) => { if (event.key === 13) this.queryModel() }}
-          />
-          <input type="submit" value="Submit" />
-        </form>
+        <Sidebar
+          style={{ flex: 1 }}
+          documents={documents}
+        />
+        <ReactQuill
+          theme="bubble"
+          style={{
+            fontSize: theme.type.base.fontSize,
+            fontFamily: theme.type.base.fontFamily,
+            color: theme.colors.text,
+            lineHeight: 1.618,
+            height: '100vh',
+            flex: 3,
+            padding: '5rem',
+          }}
+          value={prompt}
+          onChange={this.onChange}
+        />
+        <Sidebar
+          style={{
+            flex: 1
+          }}
+        />
         <button onClick={() => this.speakMessage()}>Speak</button>
         <br />
         <p>{message}</p>
