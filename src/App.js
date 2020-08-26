@@ -5,8 +5,19 @@ import { HostedModel } from '@runwayml/hosted-models'
 import axios from 'axios'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.bubble.css'
-import Sidebar from './components/Sidebar'
 import theme from './constants/theme'
+import Sidebar from './components/Sidebar'
+import ActivityBar from './components/ActivityBar'
+import {
+  Menu,
+  Popover,
+  Position,
+  TextDropdownButton,
+  TextInput,
+  RefreshIcon,
+  IconButton,
+  Text
+} from 'evergreen-ui'
 
 const commands = {
   'hello': () => console.log('called')
@@ -22,7 +33,8 @@ speech.defaults.timeout = 0
 class App extends React.Component {
   state = {
     message: '',
-    prompt: ''
+    prompt: '',
+    selectedSource: 'Personal Style'
   }
 
   onChange = (content, delta, source, editor) => {
@@ -89,20 +101,80 @@ class App extends React.Component {
     const documents = [
       {
         title: 'Hello World',
-        isOpen: true,
+        active: true,
         id: 'abcdef'
       },
       {
         title: 'Document two',
-        isOpen: false,
+        active: false,
         id: 'abcdef'
       },
       {
         title: 'The Communist Manifesto',
-        isOpen: false,
+        active: false,
         id: 'abcdef'
       },
     ]
+    const activityGroups = [
+      {
+        title: 'Assistant Settings',
+        children: [
+          {
+            title: 'Source',
+            component: (
+              <Popover
+                position={Position.BOTTOM_LEFT}
+                content={
+                  <Menu>
+                    <Menu.OptionsGroup
+                      style={{ fontFamily: `${theme.type.base.fontFamily} !important`}}
+                      options={[
+                        { label: 'Personal Style', value: 'Personal Style' },
+                        { label: 'Model Texts', value: 'Model Texts' }
+                      ]}
+                      selected={this.state.selectedSource}
+                      onChange={selected => this.setState({ selectedSource: selected })}
+                    />
+                  </Menu>
+                }
+              >
+                <TextDropdownButton style={{ fontFamily: theme.type.base.fontFamily}}>{this.state.selectedSource}</TextDropdownButton>
+              </Popover>
+            )
+          },
+          {
+            title: 'Max Characters',
+            component: (
+              <TextInput height={24} style={{ width: '3.5rem' }} type="number"></TextInput>
+            )
+          },
+          {
+            title: 'Seed',
+            component: (
+              <>
+                <Text color="muted">2abce34</Text>
+                <IconButton icon={RefreshIcon} height={24} style={{ display: 'inline-flex', marginLeft: '0.5rem' }} />
+              </>
+            )
+          },
+        ]
+      },
+      {
+        title: 'Speech Input',
+        children: [
+          {
+            title: 'Recognition'
+          },
+          {
+            title: 'Speak Result'
+          },
+          {
+            title: 'Voice'
+          }
+        ]
+      }
+    ]
+
     return (
       <div className="App">
         <Sidebar
@@ -117,20 +189,20 @@ class App extends React.Component {
             color: theme.colors.text,
             lineHeight: 1.618,
             height: '100vh',
+            boxSizing: 'border-box',
             flex: 3,
             padding: '5rem',
           }}
           value={prompt}
           onChange={this.onChange}
         />
-        <Sidebar
-          style={{
-            flex: 1
-          }}
+        <ActivityBar
+          style={{ flex: 1 }}
+          groups={activityGroups}
         />
-        <button onClick={() => this.speakMessage()}>Speak</button>
+        {/* <button onClick={() => this.speakMessage()}>Speak</button>
         <br />
-        <p>{message}</p>
+        <p>{message}</p> */}
       </div>
     )
   }

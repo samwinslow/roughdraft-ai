@@ -1,61 +1,38 @@
 import React from 'react'
 import theme from '../constants/theme'
+import styled from 'styled-components'
 import BrandTitle from './BrandTitle'
+import DocumentList from './DocumentList'
+
+const Container = styled.div`
+  font-size: ${theme.type.base.fontSize};
+  color: ${theme.colors.text};
+  background-color: ${theme.colors.accent};
+  padding: 5rem 2rem;
+  min-width: 16rem;
+  height: 100vh;
+  box-sizing: border-box;
+`
+const Section = styled.section`
+  position: fixed;
+  max-width: 12rem;
+`
 
 class Sidebar extends React.Component {
   render () {
     const { documents } = this.props
     return (
-      <div style={styles.container}>
-        <section style={styles.section}>
+      <Container>
+        <Section>
           <BrandTitle />
           { documents && (
-            <ul style={styles.documentList}>
-              {documents.map((document, index) => (
-                <li
-                  index={index}
-                  style={styles.documentListItem}
-                >
-                  <a
-                    href={`#${document.id}`}
-                    style={styles.documentLink}
-                  >{document.title}</a>
-                </li>
-              ))}
-            </ul>
+            <DocumentList documents={documents} />
           )}
-        </section>
-      </div>
+        </Section>
+      </Container>
     )
   }
 }
 
-const styles = {
-  container: {
-    fontSize: theme.type.base.fontSize,
-    color: theme.colors.text,
-    backgroundColor: theme.colors.accent,
-    padding: '5rem 2rem',
-    minWidth: '16rem',
-    height: '100vh',
-  },
-  section: {
-    position: 'fixed',
-    maxWidth: '12rem'
-  },
-  documentList: {
-    listStyleType: 'none',
-    padding: '0'
-  },
-  documentListItem: {
-    padding: '0',
-    fontSize: '1rem',
-    lineHeight: '2'
-  },
-  documentLink: {
-    textDecoration: 'none',
-    color: theme.colors.text
-  }
-}
 
 export default Sidebar;
