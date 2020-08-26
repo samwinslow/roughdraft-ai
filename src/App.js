@@ -3,7 +3,7 @@ import './App.css'
 import annyang from 'annyang'
 import { HostedModel } from '@runwayml/hosted-models'
 import axios from 'axios'
-import ReactQuill from 'react-quill'
+import ReactQuill, { setEditorSelection } from 'react-quill'
 import 'react-quill/dist/quill.bubble.css'
 import theme from './constants/theme'
 import Sidebar from './components/Sidebar'
@@ -19,7 +19,9 @@ import {
   RecordIcon,
   IconButton,
   Text,
-  Button
+  Button,
+  Switch,
+  toaster
 } from 'evergreen-ui'
 import RecognitionButton from './components/RecognitionButton'
 
@@ -33,7 +35,7 @@ const model = new HostedModel({
 const speech = axios.create()
 speech.defaults.baseURL = "https://w8ylvqkryk.execute-api.us-east-1.amazonaws.com/dev/"
 speech.defaults.timeout = 0
-
+const initialPromptState = '<h1><br></h1>'
 const getSeed = () => {
   return Math.floor(Math.random() * 10000000).toString(16)
 }
@@ -41,17 +43,37 @@ const getSeed = () => {
 class App extends React.Component {
   state = {
     message: '',
-    prompt: '',
+    prompt: initialPromptState,
     selectedSource: 'Personal Style',
     maxCharacters: 140,
     seed: getSeed(),
     recognitionStatus: 'disabled', // 'disabled', 'pending', 'enabled', 'error'
+    ttsEnabled: false,
+    selectedVoice: 'Matthew'
   }
 
   onEditorChange = (content, delta, source, editor) => {
+    console.log(delta, content)
+    if (content === '<p><br></p>') {
+      content = initialPromptState
+    }
     this.setState({
       prompt: content
     })
+    if (delta.ops[delta.ops.length - 1].insert === '/') {
+      //TODO switch to special insert mode
+    }
+    // console.log(delta, content)
+  }
+
+  onKeyDown = (event) => {
+    if (event.metaKey) {
+      switch (event.key) {
+        case 's':
+          toaster.notify('Auto-saved')
+          return event.preventDefault()
+      }
+    }
   }
 
   onSourceChange = (selected) => {
@@ -73,19 +95,41 @@ class App extends React.Component {
     })
   }
 
+  onTtsChange = () => {
+    const { ttsEnabled } = this.state
+    this.setState({
+      ttsEnabled: !ttsEnabled
+    })
+  }
+
+  onVoiceChange = (selected) => {
+    this.setState({
+      selectedVoice: selected
+    })
+  }
+
   onRecognitionButtonClick = () => {
-    console.log('Btn click')
     const { recognitionStatus } = this.state
     switch (recognitionStatus) {
       case 'disabled':
-        return this.setState({ recognitionStatus: 'pending' })
-      case 'pending':
-        return this.setState({ recognitionStatus: 'enabled' })
+        this.setState({ recognitionStatus: 'pending' })
+        return this.enableSpeechRecognition(true).then(success => {
+          this.setState({ recognitionStatus: 'enabled' })
+        }, err => {
+          this.setState({ recognitionStatus: 'error' })
+        })
       case 'enabled':
-        return this.setState({ recognitionStatus: 'error' })
-      case 'error':
-        return this.setState({ recognitionStatus: 'disabled' })
+        this.setState({ recognitionStatus: 'pending' })
+        return this.enableSpeechRecognition(false).then(success => {
+          this.setState({ recognitionStatus: 'disabled' })
+        }, err => {
+          this.setState({ recognitionStatus: 'error' })
+        })
     }
+  }
+
+  enableSpeechRecognition = async (status = true) => {
+    return true
   }
 
   queryModel = async () => {
@@ -145,9 +189,12 @@ class App extends React.Component {
     const {
       message,
       prompt,
+      selectedSource,
       maxCharacters,
       seed,
-      recognitionStatus
+      recognitionStatus,
+      ttsEnabled,
+      selectedVoice
     } = this.state
     const documents = [
       {
@@ -183,13 +230,13 @@ class App extends React.Component {
                         { label: 'Personal Style', value: 'Personal Style' },
                         { label: 'Model Texts', value: 'Model Texts' }
                       ]}
-                      selected={this.state.selectedSource}
+                      selected={selectedSource}
                       onChange={this.onSourceChange}
                     />
                   </Menu>
                 }
               >
-                <TextDropdownButton style={{ fontFamily: theme.type.base.fontFamily}}>{this.state.selectedSource}</TextDropdownButton>
+                <TextDropdownButton style={{ fontFamily: theme.type.base.fontFamily}}>{selectedSource}</TextDropdownButton>
               </Popover>
             )
           },
@@ -227,17 +274,38 @@ class App extends React.Component {
             component: (<RecognitionButton status={recognitionStatus} onClick={this.onRecognitionButtonClick} />)
           },
           {
-            title: 'Speak Result'
+            title: 'Speak Result',
+            component: (<Switch checked={ttsEnabled} onChange={this.onTtsChange} height={20}></Switch>)
           },
           {
-            title: 'Voice'
+            title: 'Voice',
+            component: (
+              <Popover
+                position={Position.BOTTOM_LEFT}
+                content={
+                  <Menu>
+                    <Menu.OptionsGroup
+                      style={{ fontFamily: `${theme.type.base.fontFamily} !important`}}
+                      options={[
+                        { label: 'Matthew', value: 'Matthew' },
+                        { label: 'Joanna', value: 'Joanna' }
+                      ]}
+                      selected={selectedVoice}
+                      onChange={this.onVoiceChange}
+                    />
+                  </Menu>
+                }
+              >
+                <TextDropdownButton style={{ fontFamily: theme.type.base.fontFamily}}>{selectedVoice}</TextDropdownButton>
+              </Popover>
+            )
           }
         ]
       }
     ]
 
     return (
-      <div className="App">
+      <div className="App" onKeyDown={this.onKeyDown}>
         <Sidebar
           style={{ flex: 1 }}
           documents={documents}
@@ -256,6 +324,7 @@ class App extends React.Component {
           }}
           value={prompt}
           onChange={this.onEditorChange}
+          onChangeSelection={this.onEditorChangeSelection}
         />
         <ActivityBar
           style={{ flex: 1 }}

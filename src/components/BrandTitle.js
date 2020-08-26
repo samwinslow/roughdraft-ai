@@ -10,6 +10,7 @@ class BrandTitle extends React.Component {
           ...style,
           fontSize: '1.618rem',
           fontFamily: theme.type.mono.fontFamily,
+          fontWeight: 600,
           lineHeight: 1,
           color: theme.colors.text,
         }}

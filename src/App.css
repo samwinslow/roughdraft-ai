@@ -24,3 +24,20 @@ body {
   line-height: inherit !important;
 }
 
+.ql-bubble .ql-editor h1 {
+  font-family: 'IBM Plex Mono', Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+  font-weight: 600;
+  letter-spacing: -0.0168rem;
+  margin-bottom: 1rem;
+}
+
+.ql-bubble .ql-editor::before {
+  font-family: 'IBM Plex Mono', Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
+  font-size: 2rem;
+  font-style: normal !important;
+  font-weight: 600;
+  letter-spacing: -0.0168rem;
+  color: #1C0040;
+  opacity: 0.5;
+}
+

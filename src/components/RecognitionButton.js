@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, RecordIcon, RefreshIcon, StopIcon, CellTowerIcon } from 'evergreen-ui'
-import Spinner from 'evergreen-ui/commonjs/spinner/src/Spinner'
 
 class RecognitionButton extends React.Component {
   state = {
