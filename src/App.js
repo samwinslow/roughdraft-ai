@@ -42,6 +42,23 @@ const getSeed = () => {
 
 class App extends React.Component {
   state = {
+    documents: [
+      {
+        title: 'Hello World',
+        active: true,
+        id: '4648ef'
+      },
+      {
+        title: 'Document two',
+        active: false,
+        id: '45d1c0'
+      },
+      {
+        title: 'The Communist Manifesto',
+        active: false,
+        id: '6fb6e'
+      },
+    ],
     message: '',
     prompt: initialPromptState,
     selectedSource: 'Personal Style',
@@ -50,6 +67,16 @@ class App extends React.Component {
     recognitionStatus: 'disabled', // 'disabled', 'pending', 'enabled', 'error'
     ttsEnabled: false,
     selectedVoice: 'Matthew'
+  }
+
+  onChangeSelectedDocument = (id) => {
+    const { documents } = this.state
+    this.setState({
+      documents: documents.map(document => ({
+        ...document,
+        active: id === document.id
+      }))
+    })
   }
 
   onEditorChange = (content, delta, source, editor) => {
@@ -187,6 +214,8 @@ class App extends React.Component {
   }
   render() {
     const {
+      documents,
+      selectedDocument,
       message,
       prompt,
       selectedSource,
@@ -196,23 +225,6 @@ class App extends React.Component {
       ttsEnabled,
       selectedVoice
     } = this.state
-    const documents = [
-      {
-        title: 'Hello World',
-        active: true,
-        id: 'abcdef'
-      },
-      {
-        title: 'Document two',
-        active: false,
-        id: 'abcdef'
-      },
-      {
-        title: 'The Communist Manifesto',
-        active: false,
-        id: 'abcdef'
-      },
-    ]
     const activityGroups = [
       {
         title: 'Assistant Settings',
@@ -309,6 +321,7 @@ class App extends React.Component {
         <Sidebar
           style={{ flex: 1 }}
           documents={documents}
+          onChangeSelectedDocument={this.onChangeSelectedDocument}
         />
         <ReactQuill
           theme="bubble"

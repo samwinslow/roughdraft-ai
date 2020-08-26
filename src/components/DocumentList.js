@@ -7,9 +7,9 @@ const List = styled.ul`
   padding: 0;
 `
 const ListItem = styled.li`
-  padding: 0;
+  padding: 0 0 1rem 0;
   font-size: 1rem;
-  line-height: 2;
+  /* TODO get it to not wrap */
 `
 const TextLink = styled.a`
   text-decoration: none;
@@ -22,13 +22,14 @@ const TextLink = styled.a`
 
 class DocumentList extends React.Component {
   render () {
-    const { documents } = this.props
+    const { documents, onChangeSelectedDocument } = this.props
     return (
       <List>
         {documents.map((document, index) => (
           <ListItem index={index}>
             <TextLink
               href={`#${document.id}`}
+              onClick={() => onChangeSelectedDocument(document.id)}
               active={document.active}
             >{document.title}</TextLink>
           </ListItem>

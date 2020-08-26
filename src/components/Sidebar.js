@@ -20,13 +20,16 @@ const Section = styled.section`
 
 class Sidebar extends React.Component {
   render () {
-    const { documents } = this.props
+    const { documents, onChangeSelectedDocument } = this.props
     return (
       <Container>
         <Section>
           <BrandTitle />
           { documents && (
-            <DocumentList documents={documents} />
+            <DocumentList
+              documents={documents}
+              onChangeSelectedDocument={onChangeSelectedDocument}
+            />
           )}
         </Section>
       </Container>
