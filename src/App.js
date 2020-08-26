@@ -8,6 +8,7 @@ import 'react-quill/dist/quill.bubble.css'
 import theme from './constants/theme'
 import Sidebar from './components/Sidebar'
 import ActivityBar from './components/ActivityBar'
+
 import {
   Menu,
   Popover,
@@ -15,9 +16,12 @@ import {
   TextDropdownButton,
   TextInput,
   RefreshIcon,
+  RecordIcon,
   IconButton,
-  Text
+  Text,
+  Button
 } from 'evergreen-ui'
+import RecognitionButton from './components/RecognitionButton'
 
 const commands = {
   'hello': () => console.log('called')
@@ -30,17 +34,58 @@ const speech = axios.create()
 speech.defaults.baseURL = "https://w8ylvqkryk.execute-api.us-east-1.amazonaws.com/dev/"
 speech.defaults.timeout = 0
 
+const getSeed = () => {
+  return Math.floor(Math.random() * 10000000).toString(16)
+}
+
 class App extends React.Component {
   state = {
     message: '',
     prompt: '',
-    selectedSource: 'Personal Style'
+    selectedSource: 'Personal Style',
+    maxCharacters: 140,
+    seed: getSeed(),
+    recognitionStatus: 'disabled', // 'disabled', 'pending', 'enabled', 'error'
   }
 
-  onChange = (content, delta, source, editor) => {
+  onEditorChange = (content, delta, source, editor) => {
     this.setState({
       prompt: content
     })
+  }
+
+  onSourceChange = (selected) => {
+    this.setState({
+      selectedSource: selected
+    })
+  }
+
+  onMaxCharactersChange = (event) => {
+    let maxCharacters = Math.max(1, Math.min(999, event.target.value))
+    this.setState({
+      maxCharacters
+    })
+  }
+
+  onSeedChange = () => {
+    this.setState({
+      seed: getSeed()
+    })
+  }
+
+  onRecognitionButtonClick = () => {
+    console.log('Btn click')
+    const { recognitionStatus } = this.state
+    switch (recognitionStatus) {
+      case 'disabled':
+        return this.setState({ recognitionStatus: 'pending' })
+      case 'pending':
+        return this.setState({ recognitionStatus: 'enabled' })
+      case 'enabled':
+        return this.setState({ recognitionStatus: 'error' })
+      case 'error':
+        return this.setState({ recognitionStatus: 'disabled' })
+    }
   }
 
   queryModel = async () => {
@@ -97,7 +142,13 @@ class App extends React.Component {
     })
   }
   render() {
-    const { message, prompt } = this.state
+    const {
+      message,
+      prompt,
+      maxCharacters,
+      seed,
+      recognitionStatus
+    } = this.state
     const documents = [
       {
         title: 'Hello World',
@@ -133,7 +184,7 @@ class App extends React.Component {
                         { label: 'Model Texts', value: 'Model Texts' }
                       ]}
                       selected={this.state.selectedSource}
-                      onChange={selected => this.setState({ selectedSource: selected })}
+                      onChange={this.onSourceChange}
                     />
                   </Menu>
                 }
@@ -145,15 +196,24 @@ class App extends React.Component {
           {
             title: 'Max Characters',
             component: (
-              <TextInput height={24} style={{ width: '3.5rem' }} type="number"></TextInput>
+              <TextInput
+                height={24}
+                style={{ width: '3.5rem' }}
+                value={maxCharacters}
+                onChange={this.onMaxCharactersChange}
+                type="number" />
             )
           },
           {
             title: 'Seed',
             component: (
               <>
-                <Text color="muted">2abce34</Text>
-                <IconButton icon={RefreshIcon} height={24} style={{ display: 'inline-flex', marginLeft: '0.5rem' }} />
+                <Text color="muted">{seed}</Text>
+                <IconButton
+                  icon={RefreshIcon}
+                  height={24}
+                  style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
+                  onClick={this.onSeedChange} />
               </>
             )
           },
@@ -163,7 +223,8 @@ class App extends React.Component {
         title: 'Speech Input',
         children: [
           {
-            title: 'Recognition'
+            title: 'Recognition',
+            component: (<RecognitionButton status={recognitionStatus} onClick={this.onRecognitionButtonClick} />)
           },
           {
             title: 'Speak Result'
@@ -194,7 +255,7 @@ class App extends React.Component {
             padding: '5rem',
           }}
           value={prompt}
-          onChange={this.onChange}
+          onChange={this.onEditorChange}
         />
         <ActivityBar
           style={{ flex: 1 }}
