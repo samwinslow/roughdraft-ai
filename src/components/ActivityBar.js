@@ -29,7 +29,6 @@ const SectionTitle = styled.h2`
 const ActivityItem = styled(Menu.Item)`
   font-family: ${theme.type.base.fontFamily};
   font-size: 1rem;
-  line-height: 4;
   width: 13rem;
   color: ${theme.colors.text};
   display: flex;

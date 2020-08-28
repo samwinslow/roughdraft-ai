@@ -1,59 +1,57 @@
 import React from 'react'
 import styled from 'styled-components'
 import theme from '../constants/theme'
-import { SmallPlusIcon } from 'evergreen-ui'
+import { SmallPlusIcon, Menu, PlusIcon } from 'evergreen-ui'
 
-const List = styled.ul`
-  list-style-type: none;
-  padding: 0;
-`
-const ListItem = styled.li`
-  padding: 0 0 1rem 0;
-  font-size: 1rem;
-  /* TODO get it to not wrap */
-`
-const TextLink = styled.a`
-  text-decoration: none;
-  color: ${props => props.active ? theme.colors.primary : theme.colors.text};
-  font-weight: ${props => props.active ? 600 : 400};
+const ListItem = styled(Menu.Item)`
+  width: 14rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
   &:hover {
-    opacity: 0.5;
+    background-color: ${theme.colors.accentDarker};
+  }
+  &:focus {
+    background-color: ${theme.colors.accentDarker};
+    border: none;
+    outline: none;
   }
 `
-const PlusGlyph = styled(SmallPlusIcon)`
-  position: relative;
-  top: 0.1rem;
-`
-const PlusText = styled.span`
-  font-weight: 600;
+const ListItemTitle = styled.div`
+  font-family: ${theme.type.base.fontFamily};
+  font-size: 1rem;
+  width: 13rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: ${props => props.primary ? theme.colors.primary : theme.colors.text};
+  font-weight: ${props => props.active || props.primary ? 600 : 400};
 `
 
 class DocumentList extends React.Component {
   render () {
     const { documents, onChangeSelectedDocument, selectedDocument } = this.props
     return (
-      <List>
-        <ListItem>
-          <TextLink
-            href={`#${document.id}`}
-            onClick={() => onChangeSelectedDocument(document.id)}
+      <Menu>
+        <ListItem
+          href={`#${document.id}`}
+          onSelect={() => onChangeSelectedDocument(document.id)}
+          icon={<PlusIcon color={theme.colors.primary} />}
+        >
+          <ListItemTitle
+            primary
             active={(document.id === selectedDocument)}
-          >
-            <PlusText>
-              <PlusGlyph /> New Document
-            </PlusText>
-          </TextLink>
+          >New Document</ListItemTitle>
         </ListItem>
         {documents.map((document, index) => (
-          <ListItem index={index}>
-            <TextLink
-              href={`#${document.id}`}
-              onClick={() => onChangeSelectedDocument(document.id)}
-              active={(document.id === selectedDocument)}
-            >{document.title}</TextLink>
+          <ListItem
+            index={index}
+            href={`#${document.id}`}
+            onSelect={() => onChangeSelectedDocument(document.id)}
+          >
+            <ListItemTitle active={(document.id === selectedDocument)}>{document.title}</ListItemTitle>
           </ListItem>
         ))}
-      </List>
+      </Menu>
     )
   }
 }

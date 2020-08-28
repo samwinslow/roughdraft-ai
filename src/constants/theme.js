@@ -9,6 +9,8 @@ const theme = {
     primary: '#7000FF',
     background: '#FFF',
     accent: '#F5FAFA',
+    accentDarker: '#D8F0F0',
+    highlight: 'rgba(255, 92, 0, 0.15)',
   },
   type: {
     base: {

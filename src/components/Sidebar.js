@@ -8,7 +8,7 @@ const Container = styled.div`
   font-size: ${theme.type.base.fontSize};
   color: ${theme.colors.text};
   background-color: ${theme.colors.accent};
-  padding: 5rem 2rem;
+  padding: 5rem 1rem;
   min-width: 16rem;
   height: 100vh;
   box-sizing: border-box;

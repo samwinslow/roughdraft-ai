@@ -13,6 +13,7 @@ class BrandTitle extends React.Component {
           fontWeight: 600,
           lineHeight: 1,
           color: theme.colors.text,
+          margin: '1rem'
         }}
       >
         roughdraft
