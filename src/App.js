@@ -84,6 +84,12 @@ class App extends React.Component {
     if (content === '<p><br></p>') {
       content = initialPromptState
     }
+    let titleMatch = content.match(/^(<h1>.*<\/h1>)/)
+    if(titleMatch) {
+      let title = editor.getText().split('\n')[0]
+      if (!title.replace(/\s/g,'').length) title = 'New Document'
+      document.title = title
+    }
     this.setState({
       prompt: content
     })
@@ -201,6 +207,12 @@ class App extends React.Component {
     console.log(data)
   }
 
+  setDocumentTitle = async (documentTitle) => {
+    this.setState({
+      documentTitle: 'New Document' // TODO
+    })
+  }
+
   componentDidMount() {
     annyang.debug()
     annyang.addCommands(commands)
@@ -216,6 +228,7 @@ class App extends React.Component {
     const {
       documents,
       selectedDocument,
+      documentTitle,
       message,
       prompt,
       selectedSource,
@@ -223,7 +236,7 @@ class App extends React.Component {
       seed,
       recognitionStatus,
       ttsEnabled,
-      selectedVoice
+      selectedVoice,
     } = this.state
     const activityGroups = [
       {
