@@ -3,6 +3,7 @@ import './App.css'
 import annyang from 'annyang'
 import { HostedModel } from '@runwayml/hosted-models'
 import axios from 'axios'
+import debounce from 'lodash/debounce'
 import ReactQuill, { setEditorSelection } from 'react-quill'
 import 'react-quill/dist/quill.bubble.css'
 import theme from './constants/theme'
@@ -45,17 +46,14 @@ class App extends React.Component {
     documents: [
       {
         title: 'Hello World',
-        active: true,
         id: '4648ef'
       },
       {
         title: 'Document two',
-        active: false,
         id: '45d1c0'
       },
       {
         title: 'The Communist Manifesto',
-        active: false,
         id: '6fb6e'
       },
     ],
@@ -66,16 +64,14 @@ class App extends React.Component {
     seed: getSeed(),
     recognitionStatus: 'disabled', // 'disabled', 'pending', 'enabled', 'error'
     ttsEnabled: false,
-    selectedVoice: 'Matthew'
+    selectedVoice: 'Matthew',
+    selectedDocument: '4648ef',
+    documentTitle: 'New Document'
   }
 
   onChangeSelectedDocument = (id) => {
-    const { documents } = this.state
     this.setState({
-      documents: documents.map(document => ({
-        ...document,
-        active: id === document.id
-      }))
+      selectedDocument: id
     })
   }
 
@@ -88,7 +84,7 @@ class App extends React.Component {
     if(titleMatch) {
       let title = editor.getText().split('\n')[0]
       if (!title.replace(/\s/g,'').length) title = 'New Document'
-      document.title = title
+      this.setDocumentTitle(title.substring(0, 140))
     }
     this.setState({
       prompt: content
@@ -207,11 +203,17 @@ class App extends React.Component {
     console.log(data)
   }
 
-  setDocumentTitle = async (documentTitle) => {
+  setDocumentTitle = debounce(newTitle => {
+    const { selectedDocument, documents } = this.state
     this.setState({
-      documentTitle: 'New Document' // TODO
+      documentTitle: newTitle, // TODO
+      documents: documents.map(document => ({
+        ...document,
+        title: document.id === selectedDocument ? newTitle : document.title
+      }))
     })
-  }
+    document.title = newTitle
+  }, 500)
 
   componentDidMount() {
     annyang.debug()
@@ -334,6 +336,7 @@ class App extends React.Component {
         <Sidebar
           style={{ flex: 1 }}
           documents={documents}
+          selectedDocument={selectedDocument}
           onChangeSelectedDocument={this.onChangeSelectedDocument}
         />
         <ReactQuill

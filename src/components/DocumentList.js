@@ -22,7 +22,7 @@ const TextLink = styled.a`
 
 class DocumentList extends React.Component {
   render () {
-    const { documents, onChangeSelectedDocument } = this.props
+    const { documents, onChangeSelectedDocument, selectedDocument } = this.props
     return (
       <List>
         {documents.map((document, index) => (
@@ -30,7 +30,7 @@ class DocumentList extends React.Component {
             <TextLink
               href={`#${document.id}`}
               onClick={() => onChangeSelectedDocument(document.id)}
-              active={document.active}
+              active={(document.id === selectedDocument)}
             >{document.title}</TextLink>
           </ListItem>
         ))}
