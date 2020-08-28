@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import theme from '../constants/theme'
+import { SmallPlusIcon } from 'evergreen-ui'
 
 const List = styled.ul`
   list-style-type: none;
@@ -19,12 +20,30 @@ const TextLink = styled.a`
     opacity: 0.5;
   }
 `
+const PlusGlyph = styled(SmallPlusIcon)`
+  position: relative;
+  top: 0.1rem;
+`
+const PlusText = styled.span`
+  font-weight: 600;
+`
 
 class DocumentList extends React.Component {
   render () {
     const { documents, onChangeSelectedDocument, selectedDocument } = this.props
     return (
       <List>
+        <ListItem>
+          <TextLink
+            href={`#${document.id}`}
+            onClick={() => onChangeSelectedDocument(document.id)}
+            active={(document.id === selectedDocument)}
+          >
+            <PlusText>
+              <PlusGlyph /> New Document
+            </PlusText>
+          </TextLink>
+        </ListItem>
         {documents.map((document, index) => (
           <ListItem index={index}>
             <TextLink
