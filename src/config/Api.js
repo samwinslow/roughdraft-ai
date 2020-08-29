@@ -11,11 +11,17 @@ server.defaults.baseURL = secrets.LAMBDA_SERVER_URL
 server.defaults.timeout = 0
 
 class Api {
-  queryModel = async (prompt, max_characters) => {
-    return model.query({
+  queryModel = async (prompt, max_characters, seed) => {
+    let result = await model.query({
       prompt,
-      max_characters
+      max_characters,
+      seed
     })
+    result = {
+      ...result,
+      generated_text: result.generated_text.substring(0, result.generated_text.lastIndexOf(' ')) + ' '
+    }
+    return result
   }
 }
 
