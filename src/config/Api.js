@@ -7,7 +7,7 @@ const model = new HostedModel({
   token: secrets.RUNWAY_TOKEN
 })
 const server = axios.create()
-server.defaults.baseURL = "https://w8ylvqkryk.execute-api.us-east-1.amazonaws.com/dev/"
+server.defaults.baseURL = secrets.LAMBDA_SERVER_URL
 server.defaults.timeout = 0
 
 class Api {
