@@ -38,12 +38,12 @@ const HeroSection = styled.section`
   min-height: 15rem;
   background-color: ${props => props.backgroundColor ? theme.colors[props.backgroundColor] : theme.colors.primary};
   color: ${props => props.color ? theme.colors[props.color] : theme.colors.background};
-  & h1 {
+  font-size: 2rem;
+  h1 {
     font-size: 4rem;
     font-family: ${theme.type.mono.fontFamily};
   }
-  & p {
-    font-size: 2rem;
+  p {
     font-weight: 300;
   }
 `
@@ -55,13 +55,43 @@ const SubSection = styled.section`
   padding: 5rem;
   background-color: ${props => props.backgroundColor ? theme.colors[props.backgroundColor] : theme.colors.primary};
   color: ${props => props.color ? theme.colors[props.color] : theme.colors.background};
-  & h1 {
+  h1 {
     font-size: 2rem;
     font-family: ${theme.type.mono.fontFamily};
   }
-  & p {
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0.618rem 0;
+  }
+  ol {
+    padding: 0;
+    list-style: none;
+    counter-reset: ol-counter;
+  }
+  ol li {
+    counter-increment: ol-counter;
+    margin: 1rem 0;
+    max-width: 28rem;
+    &::before {
+      content: counter(ol-counter);
+      font-weight: 300;
+      font-size: 2rem;
+      display: inline;
+      color: ${theme.colors.red};
+    }
+  }
+  p {
     font-size: 1rem;
   }
+`
+const WavyUnderline = styled.strong`
+  font-weight: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-underline-position: under;
+  text-decoration-color: ${theme.colors.red};
+  -webkit-text-decoration-color: ${theme.colors.red};
 `
 
 class HomeView extends React.Component {
@@ -94,20 +124,44 @@ class HomeView extends React.Component {
           </Navigation>
         </Header>
         <HeroSection backgroundColor="primary">
-          <h1>For illiterate essay writers<br />
-          or anyone who needs a little help</h1>
-          <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>
+          <h1>For illiterate essay writers... or anyone who needs a little help</h1>
+          <p><WavyUnderline>Roughdraft</WavyUnderline> is an AI writing assistant that learns about your topic &amp; writing style.</p>
         </HeroSection>
         <FlexSection>
-          <SubSection backgroundColor="yellow" flex={1}>
-            <h1>For illiterate essay writers<br />
-            or anyone who needs a little help</h1>
-            <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>
+          <SubSection backgroundColor="lightblue" color="text" flex={1}>
+            <h1>How it works</h1>
+            <ol>
+              <li>
+                <h2>Try it out</h2>
+                Try using the free Roughdraft Editor with an AI model trained on a set of essays on philosophy and social sciences.
+              </li>
+              <li>
+                <h2>Get a custom-trained model</h2>
+                To personalize the Editor’s suggestions to your writing style and subject matter, upload lots of writing samples and assigned readings for your course.
+              </li>
+              <li>
+                <h2>Write creatively with AI</h2>
+                Use your custom-trained AI model to help you when you get stuck!
+              </li>
+            </ol>
           </SubSection>
-          <SubSection backgroundColor="lightblue" color="primary" flex={1}>
-            <h1>For illiterate essay writers<br />
-            or anyone who needs a little help</h1>
-            <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>
+          <SubSection backgroundColor="yellow" flex={1}>
+            <h1>Pricing</h1>
+            <p>An AI service is costly to maintain! We offer flexible pricing and you can always request your money back if you’re not satisfied with the results of your custom-trained model.</p>
+            <ol>
+              <li>
+                <h2>Free</h2>
+                Write with an AI model pre-trained on philosophy and social sciences. There is a 500-word limit per document.
+              </li>
+              <li>
+                <h2>Basic</h2>
+                Get a custom-trained model based on the writing samples and assigned readings you provide. There is a 5,000-word limit per document.
+              </li>
+              <li>
+                <h2>Unlimited</h2>
+                Everything in Basic, plus personalized tutoring and suggested sources for further reading. There is no word limit!
+              </li>
+            </ol>
           </SubSection>
         </FlexSection>
       </div>
