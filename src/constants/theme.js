@@ -1,3 +1,5 @@
+import { readBuilderProgram } from "typescript";
+
 const theme = {
   colors: {
     red: '#FF5C00',
@@ -7,6 +9,7 @@ const theme = {
     pink: '#FF99D6',
     text: '#1C0040',
     primary: '#7000FF',
+    primaryHighlight: 'rgba(112, 0, 255, 0.15)',
     background: '#FFF',
     accent: '#F5FAFA',
     accentDarker: '#D8F0F0',

@@ -25,6 +25,7 @@ import {
   toaster
 } from 'evergreen-ui'
 import DocView from './views/DocView'
+import HomeView from './views/HomeView'
 
 const commands = {
   'hello': () => console.log('called')
@@ -69,6 +70,10 @@ class App extends React.Component {
       <div className="App">
         <Router>
           <Switch>
+            <Route exact path="/">
+              <HomeView />
+            </Route>
+
             <Route path="/doc">
               <DocView />
             </Route>
