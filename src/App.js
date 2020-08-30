@@ -362,7 +362,9 @@ class App extends React.Component {
             height: '100vh',
             boxSizing: 'border-box',
             flex: 3,
-            padding: '5rem',
+            padding: '0 5rem',
+            maxWidth: '56rem',
+            margin: '0 auto'
           }}
           value={prompt}
           onChange={this.onEditorChange}
