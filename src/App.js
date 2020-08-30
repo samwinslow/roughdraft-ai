@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './App.css'
 import annyang from 'annyang'
-import { HostedModel } from '@runwayml/hosted-models'
-import axios from 'axios'
+import Api from './config/Api.js'
 import debounce from 'lodash/debounce'
 import ReactQuill, { setEditorSelection } from 'react-quill'
 import 'react-quill/dist/quill.bubble.css'
 import theme from './constants/theme'
 import Sidebar from './components/Sidebar'
 import ActivityBar from './components/ActivityBar'
+import { diff, getSeed } from './util'
 
 import {
   Menu,
@@ -29,19 +29,14 @@ import RecognitionButton from './components/RecognitionButton'
 const commands = {
   'hello': () => console.log('called')
 }
-const model = new HostedModel({
-  url: 'https://sam-essays-1.hosted-models.runwayml.cloud/v1',
-  token: 'grcmC+iEn7w8MLhwmSEk7g=='
-})
-const speech = axios.create()
-speech.defaults.baseURL = "https://w8ylvqkryk.execute-api.us-east-1.amazonaws.com/dev/"
-speech.defaults.timeout = 0
 const initialPromptState = '<h1><br></h1>'
-const getSeed = () => {
-  return Math.floor(Math.random() * 10000000).toString(16)
-}
+const applicationApi = new Api()
 
 class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.quillRef = React.createRef()
+  }
   state = {
     documents: [
       {
@@ -76,7 +71,6 @@ class App extends React.Component {
   }
 
   onEditorChange = (content, delta, source, editor) => {
-    console.log(delta, content)
     if (content === '<p><br></p>') {
       content = initialPromptState
     }
@@ -99,9 +93,20 @@ class App extends React.Component {
     if (event.metaKey) {
       switch (event.key) {
         case 's':
-          toaster.notify('Auto-saved')
+          // TODO save
+          toaster.notify('Auto-saved', {
+            id: 'save-action'
+          })
           return event.preventDefault()
       }
+    }
+  }
+
+  onEditorKeyDown = (event) => {
+    switch (event.key) {
+      case 'Tab':
+        this.queryModel()
+        return event.preventDefault()
     }
   }
 
@@ -158,50 +163,54 @@ class App extends React.Component {
   }
 
   enableSpeechRecognition = async (status = true) => {
-    return true
+    return true //TODO
   }
 
   queryModel = async () => {
-    console.log('called')
-    const { message, prompt } = this.state
-    console.log(model.isAwake())
-    model.query({
-      prompt: message + prompt + ' ',
-      max_characters: 140
-    }).then((result) => {
-      console.log(result)
-      let nextMessage = result.generated_text.substring(0, result.generated_text.lastIndexOf(' ')) + ' '
-      this.setState({
-        prompt: '',
-        message: nextMessage
-      })
-      console.log('prompt', prompt)
-      this.speakMessage({
-        omit: message + prompt
-      })
+    const { editor } = this.quillRef.current
+    const { maxCharacters, seed } = this.state
+    toaster.notify('Generating text...', {
+      id: 'model-status'
     })
+    try {
+      const selection = editor.getSelection()
+      const insertIndex = selection ? selection.index + selection.length : initialText.length
+      const initialText = editor.getText().substring(0, insertIndex)
+      let result = await applicationApi.queryModel(initialText, maxCharacters, seed)
+      if (result.generated_text) {
+        toaster.success('Generated text!', {
+          id: 'model-status'
+        })
+        editor.insertText(insertIndex, diff(result.generated_text, initialText))
+      }
+    } catch(err) {
+      toaster.danger('Error generating text', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
   }
 
-  speakMessage = async (options = { omit: null }) => {
-    const { message } = this.state
-    var input = message
-    if (options.omit) {
-      input = message.replace(options.omit, '')
-    }
-    const { data } = await speech.post('/speak', {
-      text: input,
-      voice: 'Matthew'
-    })
-    if (data.url) {
-      annyang.abort()
-      let audio = new Audio(data.url)
-      audio.addEventListener('ended', () => {
-        annyang.resume()
-      })
-      audio.play()
-    }
-    console.log(data)
-  }
+  // speakMessage = async (options = { omit: null }) => {
+  //   const { message } = this.state
+  //   var input = message
+  //   if (options.omit) {
+  //     input = message.replace(options.omit, '')
+  //   }
+  //   const { data } = await speech.post('/speak', {
+  //     text: input,
+  //     voice: 'Matthew'
+  //   })
+  //   if (data.url) {
+  //     annyang.abort()
+  //     let audio = new Audio(data.url)
+  //     audio.addEventListener('ended', () => {
+  //       annyang.resume()
+  //     })
+  //     audio.play()
+  //   }
+  //   console.log(data)
+  // }
 
   setDocumentTitle = debounce(newTitle => {
     const { selectedDocument, documents } = this.state
@@ -216,6 +225,7 @@ class App extends React.Component {
   }, 500)
 
   componentDidMount() {
+    const { editor } = this.quillRef.current
     annyang.debug()
     annyang.addCommands(commands)
     // annyang.start()
@@ -225,6 +235,8 @@ class App extends React.Component {
       })
       this.queryModel()
     })
+    // Unset default behaviors for keypresses
+    delete editor.keyboard.bindings['9'] // 9: Tab
   }
   render() {
     const {
@@ -340,6 +352,7 @@ class App extends React.Component {
           onChangeSelectedDocument={this.onChangeSelectedDocument}
         />
         <ReactQuill
+          ref={this.quillRef}
           theme="bubble"
           style={{
             fontSize: theme.type.base.fontSize,
@@ -354,6 +367,7 @@ class App extends React.Component {
           value={prompt}
           onChange={this.onEditorChange}
           onChangeSelection={this.onEditorChangeSelection}
+          onKeyDown={this.onEditorKeyDown}
         />
         <ActivityBar
           style={{ flex: 1 }}
