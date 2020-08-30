@@ -1,0 +1,14 @@
+{
+    "trigger": true,
+    "modules": [
+        "verification-link"
+    ],
+    "parentResource": "roughdraft73de0f2d",
+    "functionName": "roughdraft73de0f2dCustomMessage",
+    "parentStack": "auth",
+    "triggerEnvs": "[{\"key\":\"RESOURCENAME\",\"value\":\"resourceName\"}]",
+    "triggerTemplate": "CustomMessage.json.ejs",
+    "roleName": "roughdraft73de0f2dCustomMessage",
+    "skipEdit": true,
+    "resourceName": "roughdraft73de0f2dCustomMessage"
+}
