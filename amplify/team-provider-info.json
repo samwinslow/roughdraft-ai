@@ -1,0 +1,29 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-roughdraft-dev-93613-authRole",
+            "UnauthRoleArn": "arn:aws:iam::478519160896:role/amplify-roughdraft-dev-93613-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::478519160896:role/amplify-roughdraft-dev-93613-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-roughdraft-dev-93613-deployment",
+            "UnauthRoleName": "amplify-roughdraft-dev-93613-unauthRole",
+            "StackName": "amplify-roughdraft-dev-93613",
+            "StackId": "arn:aws:cloudformation:us-east-1:478519160896:stack/amplify-roughdraft-dev-93613/c6ac29d0-eac5-11ea-ba7c-0a200f00c284",
+            "AmplifyAppId": "dojok1i36ctmf"
+        },
+        "categories": {
+            "function": {
+                "roughdraft73de0f2dCustomMessage": {
+                    "REDIRECTURL": "https://roughdraft.ai/",
+                    "EMAILSUBJECT": "Confirm your account for Roughdraft",
+                    "EMAILMESSAGE": "Please click here to confirm your Roughdraft account and get started."
+                }
+            },
+            "auth": {
+                "roughdraft73de0f2d": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"668041680468952\",\"client_secret\":\"b2ea0bdf0ccc80c7b3252db857624c32\"},{\"ProviderName\":\"Google\",\"client_id\":\"541571672901-cnc7ahlphi05hdjo77h38nift23mpl4q.apps.googleusercontent.com\",\"client_secret\":\"pOvRwGv-Wp9fv50esmn8jUfe\"}]"
+                }
+            }
+        }
+    }
+}
