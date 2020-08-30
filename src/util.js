@@ -1,3 +1,5 @@
 const diff = (a, b) => a.split(b).join('')
 
-export { diff }
+const getSeed = (maxDigits = 4) => Math.floor(Math.random() * Math.pow(10, maxDigits))
+
+export { diff, getSeed }

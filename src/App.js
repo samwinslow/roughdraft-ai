@@ -8,7 +8,7 @@ import 'react-quill/dist/quill.bubble.css'
 import theme from './constants/theme'
 import Sidebar from './components/Sidebar'
 import ActivityBar from './components/ActivityBar'
-import { diff } from './util'
+import { diff, getSeed } from './util'
 
 import {
   Menu,
@@ -30,9 +30,6 @@ const commands = {
   'hello': () => console.log('called')
 }
 const initialPromptState = '<h1><br></h1>'
-const getSeed = () => {
-  return Math.floor(Math.random() * 10000)
-}
 const applicationApi = new Api()
 
 class App extends React.Component {
@@ -176,14 +173,14 @@ class App extends React.Component {
       id: 'model-status'
     })
     try {
-      const initialText = editor.getText()
+      const selection = editor.getSelection()
+      const insertIndex = selection ? selection.index + selection.length : initialText.length
+      const initialText = editor.getText().substring(0, insertIndex)
       let result = await applicationApi.queryModel(initialText, maxCharacters, seed)
       if (result.generated_text) {
         toaster.success('Generated text!', {
           id: 'model-status'
         })
-        const selection = editor.getSelection()
-        const insertIndex = selection ? selection.index + selection.length : initialText.length
         editor.insertText(insertIndex, diff(result.generated_text, initialText))
       }
     } catch(err) {
