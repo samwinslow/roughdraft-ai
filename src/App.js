@@ -10,23 +10,12 @@ import {
   Link
 } from 'react-router-dom'
 
-import {
-  Menu,
-  Popover,
-  Position,
-  TextDropdownButton,
-  TextInput,
-  RefreshIcon,
-  RecordIcon,
-  IconButton,
-  Text,
-  Button,
-  Switch as SwitchControl,
-  toaster
-} from 'evergreen-ui'
 import DocView from './views/DocView'
 import HomeView from './views/HomeView'
+import Amplify, { Auth } from 'aws-amplify'
+import awsconfig from './aws-exports'
 
+Amplify.configure(awsconfig)
 const commands = {
   'hello': () => console.log('called')
 }
