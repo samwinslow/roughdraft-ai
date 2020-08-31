@@ -7,9 +7,11 @@ import chroma from 'chroma-js'
 import {
   TabNavigation,
   Tab,
+  Button,
 } from 'evergreen-ui'
 import styled from 'styled-components'
 import BrandTitle from '../components/BrandTitle'
+import WomanIllustration from '../assets/rd-woman-hci.svg'
 
 const applicationApi = new Api()
 
@@ -30,7 +32,6 @@ const TabItem = styled(Tab)`
   font-family: ${theme.type.base.fontFamily};
   font-size: ${theme.type.base.fontSize};
   color: ${props => props.primary ? theme.colors.primary : theme.colors.text};
-  background-color: ${props => props.primary ? theme.colors.primaryHighlight : 'none'};
 `
 const HeroSection = styled.section`
   margin: 0;
@@ -87,6 +88,8 @@ const SubSection = styled.section`
   }
   p {
     font-size: 1rem;
+    max-width: 28rem;
+    margin: 1rem auto;
   }
 `
 const PriceSection = styled(SubSection)`
@@ -113,6 +116,13 @@ const WavyText = styled.strong`
   text-underline-position: under;
   text-decoration-color: ${props => props.decorationColor ? props.decorationColor : theme.colors.red};
   -webkit-text-decoration-color: ${theme.colors.red};
+`
+const StyledButton = styled(Button)`
+  color: ${props => props.color ? props.color : theme.colors.primary};
+  background-color: ${props => props.background ? chroma(props.color ? props.color : theme.colors.primary).alpha(0.15) : 'transparent'};
+  &:hover {
+    background-color: ${props => chroma(props.color ? props.color : theme.colors.primary).alpha(0.15)} !important;
+  }
 `
 
 class HomeView extends React.Component {
@@ -146,11 +156,18 @@ class HomeView extends React.Component {
         </Header>
         <HeroSection backgroundColor={theme.colors.primary}>
           <h1>For illiterate essay writers... or anyone who needs a little help</h1>
-          <p><WavyText>Roughdraft</WavyText> is an AI writing assistant that learns about your topic &amp; writing style.</p>
+          <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>
         </HeroSection>
         <FlexSection>
+          <SubSection backgroundColor={theme.colors.background} color={theme.colors.text} style={{ textAlign: 'center' }} flex={1}>
+            <img src={WomanIllustration} style={{ width: '75%', margin: '2rem auto', display: 'block' }}/>
+            <h1><WavyText>Writers’ block</WavyText>, meet AI</h1>
+            <p>Even the best writers get stuck. When you can’t think of how to start your next sentence, try using a super-smart AI that suggests what to say.</p>
+            <p>Sound complicated? Roughdraft makes it easy.</p>
+            <StyledButton height={48} appearance="minimal" color={theme.colors.primary}>Get Started</StyledButton>
+          </SubSection>
           <SubSection backgroundColor={theme.colors.lightblue} color={theme.colors.text} flex={1}>
-            <h1>How it works</h1>
+            <h1>Get started in 3 steps</h1>
             <ol>
               <li>
                 <h2>Try it out</h2>
@@ -163,24 +180,6 @@ class HomeView extends React.Component {
               <li>
                 <h2>Write creatively with AI</h2>
                 Use your custom-trained AI model to help you when you get stuck!
-              </li>
-            </ol>
-          </SubSection>
-          <SubSection backgroundColor={theme.colors.background} color={theme.colors.text} flex={1}>
-            <h1>Pricing</h1>
-            <p>An AI service is costly to maintain! We offer flexible pricing and you can always request your money back if you’re not satisfied with the results of your custom-trained model.</p>
-            <ol>
-              <li>
-                <h2>Free</h2>
-                Write with an AI model pre-trained on philosophy and social sciences. There is a 500-word limit per document.
-              </li>
-              <li>
-                <h2>Basic</h2>
-                Get a custom-trained model based on the writing samples and assigned readings you provide. There is a 5,000-word limit per document.
-              </li>
-              <li>
-                <h2>Unlimited</h2>
-                Everything in Basic, plus personalized tutoring and suggested sources for further reading. There is no word limit!
               </li>
             </ol>
           </SubSection>
@@ -197,6 +196,7 @@ class HomeView extends React.Component {
             <PriceBox>
               <h2>$25/month</h2>
               <h3>For 3 months, or $33/month</h3>
+              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background>Get Started</StyledButton>
             </PriceBox>
           </PriceSection>
           <PriceSection backgroundColor={chroma(theme.colors.red).brighten(0.5)} flex={1}>
@@ -209,6 +209,7 @@ class HomeView extends React.Component {
             <PriceBox>
               <h2>$20/month</h2>
               <h3>Cancel at any time</h3>
+              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background>Get Started</StyledButton>
             </PriceBox>
           </PriceSection>
           <PriceSection backgroundColor={chroma(theme.colors.red).brighten(1)} flex={1}>
@@ -220,6 +221,7 @@ class HomeView extends React.Component {
             <PriceBox>
               <h2>$0</h2>
               <h3>Free as in beer</h3>
+              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background>Get Started</StyledButton>
             </PriceBox>
           </PriceSection>
         </FlexSection>
