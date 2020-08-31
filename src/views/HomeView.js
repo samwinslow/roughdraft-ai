@@ -107,16 +107,14 @@ const StyledButton = styled(Button)`
   }
 `
 
-class HomeView extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  state = {
 
+
+class HomeView extends React.Component {
+  componentDidMount() {
+    document.title = 'Home | Roughdraft'
   }
 
   render() {
-
     return (
       <div className="HomeView">
         <Header />

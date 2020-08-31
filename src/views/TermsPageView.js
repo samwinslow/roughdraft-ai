@@ -63,9 +63,11 @@ const StyledButton = styled(Button)`
     background-color: ${props => chroma(props.color ? props.color : theme.colors.primary).alpha(0.15)} !important;
   }
 `
-document.title = 'Terms of Service | Roughdraft'
 
 class TermsPageView extends React.Component {
+  componentDidMount() {
+    document.title = 'Terms of Service | Roughdraft'
+  }
   render() {
     return (
       <div className="TermsPageView">

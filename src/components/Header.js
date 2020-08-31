@@ -6,6 +6,7 @@ import {
   Tab,
 } from 'evergreen-ui'
 import theme from '../constants/theme'
+import Amplify, { Auth } from 'aws-amplify'
 
 const StyledHeader = styled.header`
   width: 100vw;
@@ -32,7 +33,7 @@ class Header extends React.Component {
       <StyledHeader>
         <BrandTitle />
         <Navigation>
-          <TabItem is="a" href="#" id={1} isSelected={true}>
+          <TabItem is="a" href="/" id={1} isSelected={true}>
             Home
           </TabItem>
           <TabItem is="a" href="#" id={1} isSelected={false}>
@@ -41,7 +42,7 @@ class Header extends React.Component {
           <TabItem is="a" href="#" id={1} isSelected={false}>
             Pricing
           </TabItem>
-          <TabItem is="a" href="doc" id={1} isSelected={false} primary>
+          <TabItem is="a" href="#" id={1} isSelected={false} primary onClick={() => Auth.federatedSignIn()}>
             Log In / Sign Up
           </TabItem>
         </Navigation>
