@@ -9,6 +9,7 @@ import {
 } from 'evergreen-ui'
 import styled from 'styled-components'
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 import WomanIllustration from '../assets/rd-woman-hci.svg'
 
 const applicationApi = new Api()
@@ -190,6 +191,7 @@ class HomeView extends React.Component {
             </PriceBox>
           </PriceSection>
         </FlexSection>
+        <Footer />
       </div>
     )
   }
