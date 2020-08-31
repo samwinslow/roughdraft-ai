@@ -18,6 +18,8 @@ import Amplify, { Auth, Hub } from 'aws-amplify'
 import awsconfig from './aws-exports'
 
 awsconfig.oauth.domain = 'auth.roughdraft.ai'
+awsconfig.oauth.redirectSignIn = 'http://localhost:3000/authenticated'
+awsconfig.oauth.redirectSignOut = 'http://localhost:3000/logout'
 Amplify.configure(awsconfig)
 
 const commands = {
@@ -66,6 +68,9 @@ class App extends React.Component {
             </Route>
             <Route path="/terms">
               <TermsPageView />
+            </Route>
+            <Route path="/authenticated">
+              <pre>{ JSON.stringify(this.state.user) }</pre>
             </Route>
           </Switch>
         </Router>
