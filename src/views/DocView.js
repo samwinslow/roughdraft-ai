@@ -9,7 +9,7 @@ import theme from '../constants/theme'
 import Sidebar from '../components/Sidebar'
 import ActivityBar from '../components/ActivityBar'
 import { diff, getSeed } from '../util'
-
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
 import {
   Menu,
   Popover,
@@ -381,4 +381,4 @@ class DocView extends React.Component {
   }
 }
 
-export default DocView
+export default withAuthenticator(DocView)

@@ -10,22 +10,15 @@ import {
   Link
 } from 'react-router-dom'
 
-import {
-  Menu,
-  Popover,
-  Position,
-  TextDropdownButton,
-  TextInput,
-  RefreshIcon,
-  RecordIcon,
-  IconButton,
-  Text,
-  Button,
-  Switch as SwitchControl,
-  toaster
-} from 'evergreen-ui'
 import DocView from './views/DocView'
 import HomeView from './views/HomeView'
+import PrivacyPageView from './views/PrivacyPageView'
+import TermsPageView from './views/TermsPageView'
+import Amplify, { Auth, Hub } from 'aws-amplify'
+import awsconfig from './aws-exports'
+
+awsconfig.oauth.domain = 'auth.roughdraft.ai'
+Amplify.configure(awsconfig)
 
 const commands = {
   'hello': () => console.log('called')
@@ -36,33 +29,25 @@ const applicationApi = new Api()
 class App extends React.Component {
   constructor(props) {
     super(props)
-    this.quillRef = React.createRef()
   }
   state = {
-    documents: [
-      {
-        title: 'Hello World',
-        id: '4648ef'
-      },
-      {
-        title: 'Document two',
-        id: '45d1c0'
-      },
-      {
-        title: 'The Communist Manifesto',
-        id: '6fb6e'
-      },
-    ],
-    message: '',
-    prompt: initialPromptState,
-    selectedSource: 'Personal Style',
-    maxCharacters: 140,
-    seed: getSeed(),
-    recognitionStatus: 'disabled', // 'disabled', 'pending', 'enabled', 'error'
-    ttsEnabled: false,
-    selectedVoice: 'Matthew',
-    selectedDocument: '4648ef',
-    documentTitle: 'New Document'
+    user: null,
+  }
+
+  componentDidMount() {
+    Hub.listen("auth", ({ payload: { event, data } }) => {
+      switch (event) {
+        case "signIn":
+          this.setState({ user: data })
+          break;
+        case "signOut":
+          this.setState({ user: null })
+          break
+      }
+    })
+    Auth.currentAuthenticatedUser()
+      .then(user => { this.setState({ user }); console.log('Signed in!')})
+      .catch(() => console.log("Not signed in"))
   }
 
   render() {
@@ -73,9 +58,14 @@ class App extends React.Component {
             <Route exact path="/">
               <HomeView />
             </Route>
-
             <Route path="/doc">
               <DocView />
+            </Route>
+            <Route path="/privacy">
+              <PrivacyPageView />
+            </Route>
+            <Route path="/terms">
+              <TermsPageView />
             </Route>
           </Switch>
         </Router>

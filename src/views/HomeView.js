@@ -5,34 +5,15 @@ import 'react-quill/dist/quill.bubble.css'
 import theme from '../constants/theme'
 import chroma from 'chroma-js'
 import {
-  TabNavigation,
-  Tab,
   Button,
 } from 'evergreen-ui'
 import styled from 'styled-components'
-import BrandTitle from '../components/BrandTitle'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 import WomanIllustration from '../assets/rd-woman-hci.svg'
 
 const applicationApi = new Api()
 
-const Header = styled.header`
-  width: 100vw;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 0 1rem;
-  background-color: ${theme.colors.accent};
-`
-const Navigation = styled(TabNavigation)`
-  padding: 0.5rem;
-`
-const TabItem = styled(Tab)`
-  font-family: ${theme.type.base.fontFamily};
-  font-size: ${theme.type.base.fontSize};
-  color: ${props => props.primary ? theme.colors.primary : theme.colors.text};
-`
 const HeroSection = styled.section`
   margin: 0;
   padding: 5rem;
@@ -126,35 +107,17 @@ const StyledButton = styled(Button)`
   }
 `
 
-class HomeView extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  state = {
 
+
+class HomeView extends React.Component {
+  componentDidMount() {
+    document.title = 'Home | Roughdraft'
   }
 
   render() {
-
     return (
       <div className="HomeView">
-        <Header>
-          <BrandTitle />
-          <Navigation>
-            <TabItem is="a" href="#" id={1} isSelected={true}>
-              Home
-            </TabItem>
-            <TabItem is="a" href="#" id={1} isSelected={false}>
-              Demo
-            </TabItem>
-            <TabItem is="a" href="#" id={1} isSelected={false}>
-              Pricing
-            </TabItem>
-            <TabItem is="a" href="doc" id={1} isSelected={false} primary>
-              Log In / Sign Up
-            </TabItem>
-          </Navigation>
-        </Header>
+        <Header />
         <HeroSection backgroundColor={theme.colors.primary}>
           <h1>For illiterate essay writers... or anyone who needs a little help</h1>
           <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>
@@ -226,6 +189,7 @@ class HomeView extends React.Component {
             </PriceBox>
           </PriceSection>
         </FlexSection>
+        <Footer />
       </div>
     )
   }
