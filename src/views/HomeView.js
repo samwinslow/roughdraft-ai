@@ -118,6 +118,7 @@ const WavyText = styled.strong`
   -webkit-text-decoration-color: ${theme.colors.red};
 `
 const StyledButton = styled(Button)`
+  font-family: ${theme.type.base.fontFamily};
   color: ${props => props.color ? props.color : theme.colors.primary};
   background-color: ${props => props.background ? chroma(props.color ? props.color : theme.colors.primary).alpha(0.15) : 'transparent'};
   &:hover {
