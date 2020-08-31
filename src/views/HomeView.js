@@ -3,7 +3,7 @@ import '../App.css'
 import Api from '../config/Api.js'
 import 'react-quill/dist/quill.bubble.css'
 import theme from '../constants/theme'
-
+import chroma from 'chroma-js'
 import {
   TabNavigation,
   Tab,
@@ -36,8 +36,8 @@ const HeroSection = styled.section`
   margin: 0;
   padding: 5rem;
   min-height: 15rem;
-  background-color: ${props => props.backgroundColor ? theme.colors[props.backgroundColor] : theme.colors.primary};
-  color: ${props => props.color ? theme.colors[props.color] : theme.colors.background};
+  background-color: ${props => props.backgroundColor ? props.backgroundColor : theme.colors.primary};
+  color: ${props => props.color ? props.color : theme.colors.background};
   font-size: 2rem;
   h1 {
     font-size: 4rem;
@@ -53,8 +53,8 @@ const FlexSection = styled.div`
 const SubSection = styled.section`
   flex: ${props => props.flex ? props.flex : 1};
   padding: 5rem;
-  background-color: ${props => props.backgroundColor ? theme.colors[props.backgroundColor] : theme.colors.primary};
-  color: ${props => props.color ? theme.colors[props.color] : theme.colors.background};
+  background-color: ${props => props.backgroundColor ? props.backgroundColor : theme.colors.primary};
+  color: ${props => props.color ? props.color : theme.colors.background};
   h1 {
     font-size: 2rem;
     font-family: ${theme.type.mono.fontFamily};
@@ -64,15 +64,19 @@ const SubSection = styled.section`
     font-weight: 600;
     margin: 0.618rem 0;
   }
-  ol {
+  ul, ol {
     padding: 0;
     list-style: none;
+    li {
+      margin: 1rem 0;
+      max-width: 28rem;
+    }
+  }
+  ol {
     counter-reset: ol-counter;
   }
   ol li {
     counter-increment: ol-counter;
-    margin: 1rem 0;
-    max-width: 28rem;
     &::before {
       content: counter(ol-counter);
       font-weight: 300;
@@ -85,12 +89,29 @@ const SubSection = styled.section`
     font-size: 1rem;
   }
 `
-const WavyUnderline = styled.strong`
+const PriceSection = styled(SubSection)`
+  ul {
+    min-height: 12rem;
+  }
+`
+const PriceBox = styled.div `
+  h2 {
+    margin: 0;
+    font-size: 1.618rem;
+    font-weight: 400;
+  }
+  h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0.5rem 0;
+  }
+`
+const WavyText = styled.strong`
   font-weight: inherit;
   text-decoration-line: underline;
   text-decoration-style: wavy;
   text-underline-position: under;
-  text-decoration-color: ${theme.colors.red};
+  text-decoration-color: ${props => props.decorationColor ? props.decorationColor : theme.colors.red};
   -webkit-text-decoration-color: ${theme.colors.red};
 `
 
@@ -123,12 +144,12 @@ class HomeView extends React.Component {
             </TabItem>
           </Navigation>
         </Header>
-        <HeroSection backgroundColor="primary">
+        <HeroSection backgroundColor={theme.colors.primary}>
           <h1>For illiterate essay writers... or anyone who needs a little help</h1>
-          <p><WavyUnderline>Roughdraft</WavyUnderline> is an AI writing assistant that learns about your topic &amp; writing style.</p>
+          <p><WavyText>Roughdraft</WavyText> is an AI writing assistant that learns about your topic &amp; writing style.</p>
         </HeroSection>
         <FlexSection>
-          <SubSection backgroundColor="lightblue" color="text" flex={1}>
+          <SubSection backgroundColor={theme.colors.lightblue} color={theme.colors.text} flex={1}>
             <h1>How it works</h1>
             <ol>
               <li>
@@ -145,7 +166,7 @@ class HomeView extends React.Component {
               </li>
             </ol>
           </SubSection>
-          <SubSection backgroundColor="yellow" flex={1}>
+          <SubSection backgroundColor={theme.colors.background} color={theme.colors.text} flex={1}>
             <h1>Pricing</h1>
             <p>An AI service is costly to maintain! We offer flexible pricing and you can always request your money back if you’re not satisfied with the results of your custom-trained model.</p>
             <ol>
@@ -163,6 +184,44 @@ class HomeView extends React.Component {
               </li>
             </ol>
           </SubSection>
+        </FlexSection>
+        <FlexSection>
+          <PriceSection backgroundColor={theme.colors.red} flex={1}>
+            <h1><WavyText decorationColor={theme.colors.yellow}>Unlimited</WavyText></h1>
+            <ul>
+              <li>Get access to personalized tutoring and suggested sources for further reading.</li>
+              <li>Get a custom-trained model based on the writing samples and assigned readings you provide.</li>
+              <li>Write with an AI model pre-trained on philosophy and social sciences, or use a custom model.</li>
+              <li>No word limit!</li>
+            </ul>
+            <PriceBox>
+              <h2>$25/month</h2>
+              <h3>For 3 months, or $33/month</h3>
+            </PriceBox>
+          </PriceSection>
+          <PriceSection backgroundColor={chroma(theme.colors.red).brighten(0.5)} flex={1}>
+            <h1><WavyText decorationColor={theme.colors.yellow}>Basic</WavyText></h1>
+            <ul>
+              <li>Get a custom-trained model based on the writing samples and assigned readings you provide.</li>
+              <li>Write with an AI model pre-trained on philosophy and social sciences, or use a custom model.</li>
+              <li>2,000-word limit per document</li>
+            </ul>
+            <PriceBox>
+              <h2>$20/month</h2>
+              <h3>Cancel at any time</h3>
+            </PriceBox>
+          </PriceSection>
+          <PriceSection backgroundColor={chroma(theme.colors.red).brighten(1)} flex={1}>
+            <h1>Free</h1>
+            <ul>
+              <li>Write with an AI model pre-trained on philosophy and social sciences.</li>
+              <li>500-word limit per document</li>
+            </ul>
+            <PriceBox>
+              <h2>$0</h2>
+              <h3>Free as in beer</h3>
+            </PriceBox>
+          </PriceSection>
         </FlexSection>
       </div>
     )
