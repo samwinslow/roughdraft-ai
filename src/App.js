@@ -7,9 +7,10 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from 'react-router-dom'
-
+import PrivateRoute from './views/PrivateRoute'
 import DocView from './views/DocView'
 import HomeView from './views/HomeView'
 import PrivacyPageView from './views/PrivacyPageView'
@@ -37,22 +38,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    Hub.listen("auth", ({ payload: { event, data } }) => {
-      switch (event) {
-        case "signIn":
-          this.setState({ user: data })
-          break;
-        case "signOut":
-          this.setState({ user: null })
-          break
-      }
-    })
     Auth.currentAuthenticatedUser()
-      .then(user => { this.setState({ user }); console.log('Signed in!')})
-      .catch(() => console.log("Not signed in"))
+      .then(user => {
+        this.setState({ user })
+        console.log('Signed in!')
+      }).catch(() => {
+        this.setState({ user: null })
+        console.log("Not signed in")
+      })
   }
 
   render() {
+    const { user } = this.state
     return (
       <div className="App">
         <Router>
@@ -60,9 +57,9 @@ class App extends React.Component {
             <Route exact path="/">
               <HomeView />
             </Route>
-            <Route path="/doc">
+            { this.state.user && <PrivateRoute path="/doc" user={user}>
               <DocView />
-            </Route>
+            </PrivateRoute> }
             <Route path="/privacy">
               <PrivacyPageView />
             </Route>
@@ -70,7 +67,7 @@ class App extends React.Component {
               <TermsPageView />
             </Route>
             <Route path="/authenticated">
-              <pre>{ JSON.stringify(this.state.user) }</pre>
+              <Redirect to="/doc" />
             </Route>
           </Switch>
         </Router>
