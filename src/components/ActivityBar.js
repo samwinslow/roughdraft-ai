@@ -9,9 +9,12 @@ const Container = styled.div`
   color: ${theme.colors.text};
   background-color: ${theme.colors.accent};
   padding: 5rem 1rem;
-  min-width: 16rem;
+  width: 18rem;
   height: 100vh;
   box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  right: 0;
 `
 const Section = styled.section`
   position: fixed;
