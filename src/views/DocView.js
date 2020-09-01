@@ -17,7 +17,6 @@ import {
   RefreshIcon,
   IconButton,
   Text,
-  Switch,
   toaster
 } from 'evergreen-ui'
 import { Auth, Storage } from 'aws-amplify'
@@ -53,9 +52,6 @@ class DocView extends React.Component {
     selectedSource: 'Personal Style',
     maxCharacters: 140,
     seed: getSeed(),
-    recognitionStatus: 'disabled', // 'disabled', 'pending', 'enabled', 'error'
-    ttsEnabled: false,
-    selectedVoice: 'Matthew',
     selectedDocument: '4648ef',
     documentTitle: 'New Document'
   }
@@ -177,9 +173,6 @@ class DocView extends React.Component {
       selectedSource,
       maxCharacters,
       seed,
-      recognitionStatus,
-      ttsEnabled,
-      selectedVoice,
     } = this.state
     const {
       user
