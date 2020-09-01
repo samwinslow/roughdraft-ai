@@ -4,6 +4,7 @@ import BrandTitle from './BrandTitle'
 import {
   TabNavigation,
   Tab,
+  DocumentOpenIcon,
 } from 'evergreen-ui'
 import theme from '../constants/theme'
 import Amplify, { Auth } from 'aws-amplify'
@@ -29,6 +30,7 @@ const TabItem = styled(Tab)`
 
 class Header extends React.Component {
   render() {
+    const { user } = this.props
     return (
       <StyledHeader>
         <BrandTitle />
@@ -42,9 +44,15 @@ class Header extends React.Component {
           <TabItem is="a" href="#" id={1} isSelected={false}>
             Pricing
           </TabItem>
-          <TabItem is="a" href="#" id={1} isSelected={false} primary onClick={() => Auth.federatedSignIn()}>
-            Log In / Sign Up
-          </TabItem>
+          { user ? (
+            <TabItem is="a" href="/doc" id={1} isSelected={false} primary>
+              Go to Editor &nbsp; <DocumentOpenIcon />
+            </TabItem>
+          ) : (
+            <TabItem is="a" href="#" id={1} isSelected={false} primary onClick={() => Auth.federatedSignIn()}>
+              Log In / Sign Up
+            </TabItem>
+          )}
         </Navigation>
       </StyledHeader>
     )

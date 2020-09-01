@@ -115,9 +115,10 @@ class HomeView extends React.Component {
   }
 
   render() {
+    const { user } = this.props
     return (
       <div className="HomeView">
-        <Header />
+        <Header user={user} />
         <HeroSection backgroundColor={theme.colors.primary}>
           <h1>For illiterate essay writers... or anyone who needs a little help</h1>
           <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>

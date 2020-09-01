@@ -55,7 +55,7 @@ class App extends React.Component {
         <Router>
           <Switch>
             <Route exact path="/">
-              <HomeView />
+              <HomeView user={user} />
             </Route>
             { this.state.user && (<PrivateRoute
               path="/doc"
