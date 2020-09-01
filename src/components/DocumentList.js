@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import theme from '../constants/theme'
-import { SmallPlusIcon, Menu, PlusIcon } from 'evergreen-ui'
+import { Menu, PlusIcon } from 'evergreen-ui'
 
 const ListItem = styled(Menu.Item)`
   width: 14rem;

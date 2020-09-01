@@ -1,6 +1,5 @@
 import React from 'react'
 import '../App.css'
-import annyang from 'annyang'
 import Api from '../config/Api.js'
 import debounce from 'lodash/debounce'
 import ReactQuill from 'react-quill'
@@ -21,7 +20,7 @@ import {
   Switch,
   toaster
 } from 'evergreen-ui'
-import RecognitionButton from '../components/RecognitionButton'
+import { Auth, Storage } from 'aws-amplify'
 
 const commands = {
   'hello': () => console.log('called')
@@ -126,43 +125,6 @@ class DocView extends React.Component {
     })
   }
 
-  onTtsChange = () => {
-    const { ttsEnabled } = this.state
-    this.setState({
-      ttsEnabled: !ttsEnabled
-    })
-  }
-
-  onVoiceChange = (selected) => {
-    this.setState({
-      selectedVoice: selected
-    })
-  }
-
-  onRecognitionButtonClick = () => {
-    const { recognitionStatus } = this.state
-    switch (recognitionStatus) {
-      case 'disabled':
-        this.setState({ recognitionStatus: 'pending' })
-        return this.enableSpeechRecognition(true).then(success => {
-          this.setState({ recognitionStatus: 'enabled' })
-        }, err => {
-          this.setState({ recognitionStatus: 'error' })
-        })
-      case 'enabled':
-        this.setState({ recognitionStatus: 'pending' })
-        return this.enableSpeechRecognition(false).then(success => {
-          this.setState({ recognitionStatus: 'disabled' })
-        }, err => {
-          this.setState({ recognitionStatus: 'error' })
-        })
-    }
-  }
-
-  enableSpeechRecognition = async (status = true) => {
-    return true //TODO
-  }
-
   queryModel = async () => {
     const { editor } = this.quillRef.current
     const { maxCharacters, seed } = this.state
@@ -188,27 +150,6 @@ class DocView extends React.Component {
     }
   }
 
-  // speakMessage = async (options = { omit: null }) => {
-  //   const { message } = this.state
-  //   var input = message
-  //   if (options.omit) {
-  //     input = message.replace(options.omit, '')
-  //   }
-  //   const { data } = await speech.post('/speak', {
-  //     text: input,
-  //     voice: 'Matthew'
-  //   })
-  //   if (data.url) {
-  //     annyang.abort()
-  //     let audio = new Audio(data.url)
-  //     audio.addEventListener('ended', () => {
-  //       annyang.resume()
-  //     })
-  //     audio.play()
-  //   }
-  //   console.log(data)
-  // }
-
   setDocumentTitle = debounce(newTitle => {
     const { selectedDocument, documents } = this.state
     this.setState({
@@ -224,16 +165,6 @@ class DocView extends React.Component {
   componentDidMount() {
     const { editor } = this.quillRef.current
     editor.focus()
-    annyang.debug()
-    annyang.addCommands(commands)
-    // annyang.start()
-    annyang.addCallback('result', (phrases) => {
-      this.setState({
-        prompt: phrases[0]
-      })
-      this.queryModel()
-    })
-    // Unset default behaviors for keypresses
     delete editor.keyboard.bindings['9'] // 9: Tab
   }
   render() {
@@ -306,42 +237,6 @@ class DocView extends React.Component {
           },
         ]
       },
-      {
-        title: 'Speech Input',
-        children: [
-          {
-            title: 'Recognition',
-            component: (<RecognitionButton status={recognitionStatus} onClick={this.onRecognitionButtonClick} />)
-          },
-          {
-            title: 'Speak Result',
-            component: (<Switch checked={ttsEnabled} onChange={this.onTtsChange} height={20}></Switch>)
-          },
-          {
-            title: 'Voice',
-            component: (
-              <Popover
-                position={Position.BOTTOM_LEFT}
-                content={
-                  <Menu>
-                    <Menu.OptionsGroup
-                      style={{ fontFamily: `${theme.type.base.fontFamily} !important`}}
-                      options={[
-                        { label: 'Matthew', value: 'Matthew' },
-                        { label: 'Joanna', value: 'Joanna' }
-                      ]}
-                      selected={selectedVoice}
-                      onChange={this.onVoiceChange}
-                    />
-                  </Menu>
-                }
-              >
-                <TextDropdownButton style={{ fontFamily: theme.type.base.fontFamily}}>{selectedVoice}</TextDropdownButton>
-              </Popover>
-            )
-          }
-        ]
-      }
     ]
 
     return (
