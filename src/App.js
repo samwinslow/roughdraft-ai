@@ -15,7 +15,7 @@ import DocView from './views/DocView'
 import HomeView from './views/HomeView'
 import PrivacyPageView from './views/PrivacyPageView'
 import TermsPageView from './views/TermsPageView'
-import Amplify, { Auth, Hub } from 'aws-amplify'
+import Amplify, { Auth } from 'aws-amplify'
 import awsconfig from './aws-exports'
 
 awsconfig.oauth.domain = 'auth.roughdraft.ai'
@@ -70,6 +70,9 @@ class App extends React.Component {
             </Route>
             <Route path="/authenticated">
               <Redirect to="/doc" />
+            </Route>
+            <Route path="/logout">
+              <Redirect to="/" />
             </Route>
           </Switch>
         </Router>
