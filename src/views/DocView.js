@@ -9,7 +9,6 @@ import theme from '../constants/theme'
 import Sidebar from '../components/Sidebar'
 import ActivityBar from '../components/ActivityBar'
 import { diff, getSeed } from '../util'
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
 import {
   Menu,
   Popover,
@@ -224,6 +223,7 @@ class DocView extends React.Component {
 
   componentDidMount() {
     const { editor } = this.quillRef.current
+    editor.focus()
     annyang.debug()
     annyang.addCommands(commands)
     // annyang.start()
@@ -250,6 +250,9 @@ class DocView extends React.Component {
       ttsEnabled,
       selectedVoice,
     } = this.state
+    const {
+      user
+    } = this.props
     const activityGroups = [
       {
         title: 'Assistant Settings',
@@ -342,9 +345,11 @@ class DocView extends React.Component {
     ]
 
     return (
-      <div className="DocView" onKeyDown={this.onKeyDown}>
+      <div className="DocView" onKeyDown={this.onKeyDown} style={{
+        height: '100vh',
+      }}>
         <Sidebar
-          style={{ flex: 1 }}
+          user={user}
           documents={documents}
           selectedDocument={selectedDocument}
           onChangeSelectedDocument={this.onChangeSelectedDocument}
@@ -359,10 +364,9 @@ class DocView extends React.Component {
             lineHeight: 1.618,
             height: '100vh',
             boxSizing: 'border-box',
-            flex: 3,
             padding: '0 5rem',
-            maxWidth: '56rem',
-            margin: '0 auto'
+            width: 'calc(100vw - 36rem)',
+            margin: '0 18rem'
           }}
           value={prompt}
           onChange={this.onEditorChange}
@@ -370,7 +374,6 @@ class DocView extends React.Component {
           onKeyDown={this.onEditorKeyDown}
         />
         <ActivityBar
-          style={{ flex: 1 }}
           groups={activityGroups}
         />
         {/* <button onClick={() => this.speakMessage()}>Speak</button>
@@ -381,4 +384,4 @@ class DocView extends React.Component {
   }
 }
 
-export default withAuthenticator(DocView)
+export default DocView

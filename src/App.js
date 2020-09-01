@@ -7,17 +7,20 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  Redirect
 } from 'react-router-dom'
-
+import PrivateRoute from './views/PrivateRoute'
 import DocView from './views/DocView'
 import HomeView from './views/HomeView'
 import PrivacyPageView from './views/PrivacyPageView'
 import TermsPageView from './views/TermsPageView'
-import Amplify, { Auth, Hub } from 'aws-amplify'
+import Amplify, { Auth } from 'aws-amplify'
 import awsconfig from './aws-exports'
 
 awsconfig.oauth.domain = 'auth.roughdraft.ai'
+awsconfig.oauth.redirectSignIn = 'http://localhost:3000/authenticated'
+awsconfig.oauth.redirectSignOut = 'http://localhost:3000/logout'
 Amplify.configure(awsconfig)
 
 const commands = {
@@ -35,37 +38,41 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    Hub.listen("auth", ({ payload: { event, data } }) => {
-      switch (event) {
-        case "signIn":
-          this.setState({ user: data })
-          break;
-        case "signOut":
-          this.setState({ user: null })
-          break
-      }
-    })
     Auth.currentAuthenticatedUser()
-      .then(user => { this.setState({ user }); console.log('Signed in!')})
-      .catch(() => console.log("Not signed in"))
+      .then(user => {
+        this.setState({ user })
+        console.log('Signed in!')
+      }).catch(() => {
+        this.setState({ user: null })
+        console.log("Not signed in")
+      })
   }
 
   render() {
+    const { user } = this.state
     return (
       <div className="App">
         <Router>
           <Switch>
             <Route exact path="/">
-              <HomeView />
+              <HomeView user={user} />
             </Route>
-            <Route path="/doc">
-              <DocView />
-            </Route>
+            { this.state.user && (<PrivateRoute
+              path="/doc"
+              user={user}
+              view={DocView}
+            />)}
             <Route path="/privacy">
               <PrivacyPageView />
             </Route>
             <Route path="/terms">
               <TermsPageView />
+            </Route>
+            <Route path="/authenticated">
+              <Redirect to="/doc" />
+            </Route>
+            <Route path="/logout">
+              <Redirect to="/" />
             </Route>
           </Switch>
         </Router>
