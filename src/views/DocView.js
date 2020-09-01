@@ -250,6 +250,9 @@ class DocView extends React.Component {
       ttsEnabled,
       selectedVoice,
     } = this.state
+    const {
+      user
+    } = this.props
     const activityGroups = [
       {
         title: 'Assistant Settings',
@@ -346,6 +349,7 @@ class DocView extends React.Component {
         height: '100vh',
       }}>
         <Sidebar
+          user={user}
           documents={documents}
           selectedDocument={selectedDocument}
           onChangeSelectedDocument={this.onChangeSelectedDocument}

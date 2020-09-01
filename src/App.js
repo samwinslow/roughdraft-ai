@@ -57,9 +57,11 @@ class App extends React.Component {
             <Route exact path="/">
               <HomeView />
             </Route>
-            { this.state.user && <PrivateRoute path="/doc" user={user}>
-              <DocView />
-            </PrivateRoute> }
+            { this.state.user && (<PrivateRoute
+              path="/doc"
+              user={user}
+              view={DocView}
+            />)}
             <Route path="/privacy">
               <PrivacyPageView />
             </Route>

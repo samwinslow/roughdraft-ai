@@ -23,7 +23,7 @@ const Section = styled.section`
 
 class Sidebar extends React.Component {
   render () {
-    const { documents, onChangeSelectedDocument, selectedDocument } = this.props
+    const { user, documents, onChangeSelectedDocument, selectedDocument } = this.props
     return (
       <Container>
         <Section>
@@ -35,6 +35,8 @@ class Sidebar extends React.Component {
               onChangeSelectedDocument={onChangeSelectedDocument}
             />
           )}
+          {/* TODO make signout component here */}
+          {user.attributes.email}
         </Section>
       </Container>
     )
