@@ -33,6 +33,17 @@ class Api {
   }
   createDocument = async (key, content) => {
     // Creates document for specified key with content.
+    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
+    const { data } = server.post('/doc', {
+        content
+      }, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    return data
+    console.log(data)
   }
   updateDocument = async (key, content) => {
     // Set content of document with specified key.

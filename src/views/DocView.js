@@ -146,6 +146,18 @@ class DocView extends React.Component {
     }
   }
 
+  createDocument = async () => {
+    try {
+      let result = await applicationApi.createDocument('abcdef','Test content')
+      console.log(result)
+    } catch (err) {
+      toaster.danger('Error creating doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
+  }
+
   setDocumentTitle = debounce(newTitle => {
     const { selectedDocument, documents } = this.state
     this.setState({
@@ -226,6 +238,16 @@ class DocView extends React.Component {
                   style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
                   onClick={this.onSeedChange} />
               </>
+            )
+          },
+          {
+            title: 'Create Doc TEMP',
+            component: (
+              <IconButton
+                icon={RefreshIcon}
+                height={24}
+                style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
+                onClick={this.createDocument} />
             )
           },
         ]
