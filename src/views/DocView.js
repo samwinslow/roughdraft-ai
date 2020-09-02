@@ -46,9 +46,17 @@ class DocView extends React.Component {
     documentTitle: 'New Document'
   }
 
-  onChangeSelectedDocument = (noteId) => {
+  onChangeSelectedDocument = async (noteId) => {
     const { editor } = this.quillRef.current
-    console.log(noteId)
+    try {
+      let result = await applicationApi.getDocument(noteId)
+      console.log(result)
+    } catch (err) {
+      toaster.danger('Error getting doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
     this.setState({
       selectedDocument: noteId
     })
@@ -151,18 +159,6 @@ class DocView extends React.Component {
     }
   }
 
-  getDocument = async (noteId) => {
-    try {
-      let result = await applicationApi.getDocument(noteId)
-      console.log(result)
-    } catch (err) {
-      toaster.danger('Error getting doc', {
-        id: 'model-status'
-      })
-      console.log(err)
-    }
-  }
-
   getDocuments = async () => {
     try {
       let documents = await applicationApi.getDocuments()
@@ -177,7 +173,7 @@ class DocView extends React.Component {
   }
 
   setDocumentTitle = debounce(newTitle => {
-    const {
+    let {
       selectedDocument,
       documents,
       documentTitle,
@@ -187,7 +183,7 @@ class DocView extends React.Component {
       // Create new document on backend and focus it
       console.log('nw doc chg')
       applicationApi.createDocument(newTitle, prompt).then(newDoc => {
-        console.log(newDoc)
+        console.log("newDoc", newDoc)
         this.setState({
           documents: [...documents, newDoc]
         })
@@ -201,7 +197,7 @@ class DocView extends React.Component {
     }
     if (documentTitle !== newTitle) {
       // Update backend and set frontend too
-      applicationApi.updateDocument(selectedDocument, newTitle, null).then(updatedDoc => {
+      applicationApi.updateDocument(selectedDocument, newTitle, prompt).then(updatedDoc => {
         console.log(updatedDoc)
         this.setState({
           documentTitle: newTitle, // TODO
