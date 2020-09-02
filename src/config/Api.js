@@ -29,13 +29,10 @@ class Api {
     }
     return result
   }
-  getDocumentList = async () => {
+  getDocuments = async () => {
     // Returns list of document keys and metadata from the API.
-  }
-  getDocument = async (noteId) => {
-    // Gets document content for specified key.
     const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
-    const { data } = server.get('/doc/' + noteId, {
+    const { data } = await server.get('/docs', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json'
@@ -43,10 +40,21 @@ class Api {
     })
     return data
   }
-  createDocument = async (key, content) => {
+  getDocument = async (noteId) => {
+    // Gets document content for specified key.
+    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
+    const { data } = await server.get('/doc/' + noteId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    return data
+  }
+  createDocument = async (content) => {
     // Creates document for specified key with content.
     const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
-    const { data } = server.post('/doc', {
+    const { data } = await server.post('/doc', {
         content
       }, {
       headers: {
@@ -56,11 +64,29 @@ class Api {
     })
     return data
   }
-  updateDocument = async (key, content) => {
+  updateDocument = async (noteId, content) => {
     // Set content of document with specified key.
+    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
+    const { data } = await server.put('/doc/' + noteId, {
+        content
+      }, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    return data
   }
-  deleteDocument = async (key) => {
+  deleteDocument = async (noteId) => {
     // Delete document with specified key.
+    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
+    const { data } = await server.delete('/doc/' + noteId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    return data
   }
 }
 

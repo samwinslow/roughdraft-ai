@@ -33,33 +33,23 @@ class DocView extends React.Component {
     this.quillRef = React.createRef()
   }
   state = {
-    documents: [
-      {
-        title: 'Hello World',
-        id: '4648ef'
-      },
-      {
-        title: 'Document two',
-        id: '45d1c0'
-      },
-      {
-        title: 'The Communist Manifesto',
-        id: '6fb6e'
-      },
-    ],
+    documents: [],
     message: '',
     prompt: initialPromptState,
     selectedSource: 'Personal Style',
     maxCharacters: 140,
     seed: getSeed(),
-    selectedDocument: '4648ef',
+    selectedDocument: null,
     documentTitle: 'New Document'
   }
 
-  onChangeSelectedDocument = (id) => {
+  onChangeSelectedDocument = (noteId) => {
+    const { editor } = this.quillRef.current
+    console.log(noteId)
     this.setState({
-      selectedDocument: id
+      selectedDocument: noteId
     })
+    editor.focus()
   }
 
   onEditorChange = (content, delta, source, editor) => {
@@ -170,6 +160,19 @@ class DocView extends React.Component {
     }
   }
 
+  getDocuments = async () => {
+    try {
+      let documents = await applicationApi.getDocuments()
+      console.log(documents)
+      this.setState({ documents })
+    } catch (err) {
+      toaster.danger('Error getting doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
+  }
+
   setDocumentTitle = debounce(newTitle => {
     const { selectedDocument, documents } = this.state
     this.setState({
@@ -182,17 +185,17 @@ class DocView extends React.Component {
     document.title = newTitle
   }, 500)
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const { editor } = this.quillRef.current
     editor.focus()
     delete editor.keyboard.bindings['9'] // 9: Tab
+    await this.getDocuments()
   }
   render() {
     const {
       documents,
       selectedDocument,
       documentTitle,
-      message,
       prompt,
       selectedSource,
       maxCharacters,

@@ -24,7 +24,7 @@ const ListItemTitle = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   color: ${props => props.primary ? theme.colors.primary : theme.colors.text};
-  font-weight: ${props => props.active || props.primary ? 600 : 400};
+  font-weight: ${props => props.active ? 600 : 400};
 `
 
 class DocumentList extends React.Component {
@@ -33,22 +33,22 @@ class DocumentList extends React.Component {
     return (
       <Menu>
         <ListItem
-          href={`#${document.id}`}
-          onSelect={() => onChangeSelectedDocument(document.id)}
+          href={`#${document.noteId}`}
+          onSelect={() => onChangeSelectedDocument(document.noteId)}
           icon={<PlusIcon color={theme.colors.primary} />}
         >
           <ListItemTitle
             primary
-            active={(document.id === selectedDocument)}
+            active={(!selectedDocument)}
           >New Document</ListItemTitle>
         </ListItem>
-        {documents.map((document, index) => (
+        {documents.map((document) => (
           <ListItem
-            index={index}
-            href={`#${document.id}`}
-            onSelect={() => onChangeSelectedDocument(document.id)}
+            key={document.noteId}
+            href={`#${document.noteId}`}
+            onSelect={() => onChangeSelectedDocument(document.noteId)}
           >
-            <ListItemTitle active={(document.id === selectedDocument)}>{document.title}</ListItemTitle>
+            <ListItemTitle active={(document.noteId === selectedDocument)}>{document.title}</ListItemTitle>
           </ListItem>
         ))}
       </Menu>
