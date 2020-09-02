@@ -12,6 +12,10 @@ server.defaults.baseURL = secrets.LAMBDA_SERVER_URL
 server.defaults.timeout = 0
 
 class Api {
+  __printAuth = async () => {
+    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
+    console.log(accessToken)
+  }
   queryModel = async (prompt, max_characters, seed) => {
     // Queries the Runway model and returns full generated text.
     let result = await model.query({
@@ -28,8 +32,16 @@ class Api {
   getDocumentList = async () => {
     // Returns list of document keys and metadata from the API.
   }
-  getDocument = async (key) => {
+  getDocument = async (noteId) => {
     // Gets document content for specified key.
+    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
+    const { data } = server.get('/doc/' + noteId, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    return data
   }
   createDocument = async (key, content) => {
     // Creates document for specified key with content.
@@ -43,7 +55,6 @@ class Api {
       }
     })
     return data
-    console.log(data)
   }
   updateDocument = async (key, content) => {
     // Set content of document with specified key.

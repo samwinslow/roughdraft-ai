@@ -158,6 +158,18 @@ class DocView extends React.Component {
     }
   }
 
+  getDocument = async (noteId) => {
+    try {
+      let result = await applicationApi.getDocument(noteId)
+      console.log(result)
+    } catch (err) {
+      toaster.danger('Error getting doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
+  }
+
   setDocumentTitle = debounce(newTitle => {
     const { selectedDocument, documents } = this.state
     this.setState({
@@ -241,13 +253,13 @@ class DocView extends React.Component {
             )
           },
           {
-            title: 'Create Doc TEMP',
+            title: 'print auth TEMP',
             component: (
               <IconButton
                 icon={RefreshIcon}
                 height={24}
                 style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
-                onClick={this.createDocument} />
+                onClick={() => applicationApi.__printAuth()} />
             )
           },
         ]
