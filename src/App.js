@@ -57,11 +57,18 @@ class App extends React.Component {
             <Route exact path="/">
               <HomeView user={user} />
             </Route>
-            { this.state.user && (<PrivateRoute
-              path="/doc"
-              user={user}
-              view={DocView}
-            />)}
+            { this.state.user && (
+              <>
+                <PrivateRoute
+                  path="/doc/:noteId"
+                  user={user}
+                  view={DocView}
+                />
+                <Route exact path="/doc/">
+                  <Redirect to="/doc/new" />
+                </Route>
+              </>
+            )}
             <Route path="/privacy">
               <PrivacyPageView />
             </Route>

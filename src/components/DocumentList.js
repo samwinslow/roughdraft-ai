@@ -34,12 +34,12 @@ class DocumentList extends React.Component {
       <Menu>
         <ListItem
           href={`#${document.noteId}`}
-          onSelect={() => onChangeSelectedDocument(document.noteId)}
+          onSelect={() => onChangeSelectedDocument('new')}
           icon={<PlusIcon color={theme.colors.primary} />}
         >
           <ListItemTitle
             primary
-            active={(!selectedDocument)}
+            active={(selectedDocument === 'new')}
           >New Document</ListItemTitle>
         </ListItem>
         {documents.map((document) => (

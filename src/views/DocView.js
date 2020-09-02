@@ -19,7 +19,10 @@ import {
   Text,
   toaster
 } from 'evergreen-ui'
-import { Auth, Storage } from 'aws-amplify'
+import {
+  Redirect,
+  Link
+} from 'react-router-dom'
 
 const commands = {
   'hello': () => console.log('called')
@@ -39,7 +42,7 @@ class DocView extends React.Component {
     selectedSource: 'Personal Style',
     maxCharacters: 140,
     seed: getSeed(),
-    selectedDocument: null,
+    selectedDocument: 'new',
     documentTitle: 'New Document'
   }
 
@@ -187,9 +190,12 @@ class DocView extends React.Component {
 
   componentDidMount = async () => {
     const { editor } = this.quillRef.current
+    const { params } = this.props.match
     editor.focus()
     delete editor.keyboard.bindings['9'] // 9: Tab
+    console.log(this.props)
     await this.getDocuments()
+    
   }
   render() {
     const {
@@ -202,7 +208,8 @@ class DocView extends React.Component {
       seed,
     } = this.state
     const {
-      user
+      user,
+      match
     } = this.props
     const activityGroups = [
       {
@@ -265,6 +272,12 @@ class DocView extends React.Component {
                 onClick={() => applicationApi.__printAuth()} />
             )
           },
+          {
+            title: 'link',
+            component: (
+              <Link to={`/doc/otherId`}>Link</Link>
+            )
+          },
         ]
       },
     ]
@@ -273,6 +286,7 @@ class DocView extends React.Component {
       <div className="DocView" onKeyDown={this.onKeyDown} style={{
         height: '100vh',
       }}>
+        <Redirect to={`/doc/${selectedDocument}`} />
         <Sidebar
           user={user}
           documents={documents}
