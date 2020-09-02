@@ -39,7 +39,6 @@ class DocumentList extends React.Component {
         >
           <ListItemTitle
             primary
-            active={(selectedDocument === 'new')}
           >New Document</ListItemTitle>
         </ListItem>
         {documents.map((document) => (

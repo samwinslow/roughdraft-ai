@@ -177,15 +177,47 @@ class DocView extends React.Component {
   }
 
   setDocumentTitle = debounce(newTitle => {
-    const { selectedDocument, documents } = this.state
-    this.setState({
-      documentTitle: newTitle, // TODO
-      documents: documents.map(document => ({
-        ...document,
-        title: document.id === selectedDocument ? newTitle : document.title
-      }))
-    })
-    document.title = newTitle
+    const {
+      selectedDocument,
+      documents,
+      documentTitle,
+      prompt
+    } = this.state
+    if (selectedDocument === 'new') {
+      // Create new document on backend and focus it
+      console.log('nw doc chg')
+      applicationApi.createDocument(newTitle, prompt).then(newDoc => {
+        console.log(newDoc)
+        this.setState({
+          documents: [...documents, newDoc]
+        })
+        this.onChangeSelectedDocument(newDoc.noteId)
+      }, error => {
+        toaster.danger('Error creating document', {
+          id: 'model-status'
+        })
+        console.error(error)
+      })
+    }
+    if (documentTitle !== newTitle) {
+      // Update backend and set frontend too
+      applicationApi.updateDocument(selectedDocument, newTitle, null).then(updatedDoc => {
+        console.log(updatedDoc)
+        this.setState({
+          documentTitle: newTitle, // TODO
+          documents: documents.map(document => ({
+            ...document,
+            title: document.noteId === selectedDocument ? newTitle : document.title
+          }))
+        })
+        document.title = newTitle
+      }, error => {
+        toaster.danger('Error updating document', {
+          id: 'model-status'
+        })
+        console.error(error)
+      })
+    }
   }, 500)
 
   componentDidMount = async () => {
