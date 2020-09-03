@@ -112,10 +112,6 @@ class DocView extends React.Component {
     }
   }
 
-  createNewDocument = async () => {
-    console.log('yeet')
-  }
-
   createDocument = async (title, content) => {
     try {
       let result = await applicationApi.createDocument(title, content)
@@ -195,6 +191,33 @@ class DocView extends React.Component {
       //TODO switch to special insert mode
     }
     // console.log(delta, content)
+  }
+
+  createNewDocument = async () => {
+    const { editor } = this.quillRef.current
+    try {
+      editor.blur()
+      this.setState({
+        editorState: 'loading'
+      })
+      let newDoc = await applicationApi.createDocument(null, initialPromptState)
+      if (newDoc) {
+        this.setState({
+          documents: [...this.state.documents, newDoc]
+        })
+        await this.onChangeSelectedDocument(newDoc.noteId)
+        editor.focus()
+      }
+    } catch (err) {
+      toaster.danger('Error creating doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    } finally {
+      this.setState({
+        editorState: 'editor'
+      })
+    }
   }
   
   setRemoteContent = debounce((noteId, title, content) => {
