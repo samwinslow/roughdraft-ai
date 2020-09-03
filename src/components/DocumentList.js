@@ -24,11 +24,10 @@ class DocumentList extends React.Component {
             role="menuitem"
             to="/doc/new/"
             onClick={() => createNewDocument()}
-            icon={<PlusIcon color={theme.colors.primary} />}
           >
-            <ListItemTitle
-              primary
-            >New Document</ListItemTitle>
+            <ListItemTitle primary>
+              <StyledPlusIcon color={theme.colors.primary} /> New Document
+            </ListItemTitle>
           </ListItem>
           {documents.map((document) => (
             <ListItem
@@ -91,6 +90,10 @@ const ListItemTitle = styled.div`
   text-overflow: ellipsis;
   color: ${props => props.primary ? theme.colors.primary : theme.colors.text};
   font-weight: ${props => props.active ? 600 : 400};
+`
+const StyledPlusIcon = styled(PlusIcon)`
+  position: relative;
+  top: 2px;
 `
 
 export default DocumentList

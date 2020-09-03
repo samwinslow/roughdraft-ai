@@ -47,49 +47,6 @@ class DocView extends React.Component {
     documentTitle: 'New Document'
   }
 
-  onChangeSelectedDocument = async (noteId) => {
-    const { editor } = this.quillRef.current
-    try {
-      editor.blur()
-      this.setState({
-        editorState: 'loading'
-      })
-      let result = await applicationApi.getDocument(noteId)
-      this.setState({
-        selectedDocument: noteId,
-        prompt: result.content,
-      })
-    } catch (err) {
-      toaster.danger('Error getting doc', {
-        id: 'model-status'
-      })
-      console.log(err)
-    } finally {
-      this.setState({
-        editorState: 'editor'
-      })
-    }
-  }
-
-  onEditorChange = (content, delta, source, editor) => {
-    if (content === '<p><br></p>') {
-      content = initialPromptState
-    }
-    let titleMatch = content.match(/^(<h1>.*<\/h1>)/)
-    if(titleMatch) {
-      let title = editor.getText().split('\n')[0]
-      if (!title.replace(/\s/g,'').length) title = 'New Document'
-      this.setDocumentTitle(title.substring(0, 140))
-    }
-    this.setState({
-      prompt: content
-    })
-    if (delta.ops[delta.ops.length - 1].insert === '/') {
-      //TODO switch to special insert mode
-    }
-    // console.log(delta, content)
-  }
-
   onKeyDown = (event) => {
     if (event.metaKey) {
       switch (event.key) {
@@ -159,30 +116,90 @@ class DocView extends React.Component {
     console.log('yeet')
   }
 
-  createDocument = async () => {
+  createDocument = async (title, content) => {
     try {
-      let result = await applicationApi.createDocument('abcdef','Test content')
-      console.log(result)
+      let result = await applicationApi.createDocument(title, content)
+      return result
     } catch (err) {
       toaster.danger('Error creating doc', {
         id: 'model-status'
       })
-      console.log(err)
+      return { status: false }
     }
   }
 
   getDocuments = async () => {
     try {
       let documents = await applicationApi.getDocuments()
-      console.log(documents)
-      this.setState({ documents })
+      return documents
+    } catch (err) {
+      toaster.danger('Error getting doc', {
+        id: 'model-status'
+      })
+      return false
+    }
+  }
+
+  updateDocument = async (noteId, title, content) => {
+    try {
+      let result = await applicationApi.updateDocument(noteId, title, content)
+      return result
+    } catch (err) {
+      toaster.danger('Error updating doc', {
+        id: 'model-status'
+      })
+      return { status: false }
+    }
+  }
+
+  onChangeSelectedDocument = async (noteId) => {
+    const { editor } = this.quillRef.current
+    try {
+      editor.blur()
+      this.setState({
+        editorState: 'loading'
+      })
+      let result = await applicationApi.getDocument(noteId)
+      this.setState({
+        selectedDocument: noteId,
+        prompt: result.content,
+      })
     } catch (err) {
       toaster.danger('Error getting doc', {
         id: 'model-status'
       })
       console.log(err)
+    } finally {
+      this.setState({
+        editorState: 'editor'
+      })
     }
   }
+
+  onEditorChange = (content, delta, source, editor) => {
+    const { selectedDocument } = this.state
+    if (content === '<p><br></p>') {
+      content = initialPromptState
+    }
+    let titleMatch = content.match(/^(<h1>.*<\/h1>)/)
+    if(titleMatch) {
+      let title = editor.getText().split('\n')[0]
+      if (!title.replace(/\s/g,'').length) title = 'New Document'
+      this.setDocumentTitle(title.substring(0, 140))
+    }
+    this.setState({
+      prompt: content
+    })
+    this.setRemoteContent(selectedDocument, null, content)
+    if (delta.ops[delta.ops.length - 1].insert === '/') {
+      //TODO switch to special insert mode
+    }
+    // console.log(delta, content)
+  }
+  
+  setRemoteContent = debounce((noteId, title, content) => {
+    this.updateDocument(noteId, title, content)
+  }, 1000)
 
   setDocumentTitle = debounce(newTitle => {
     let {
@@ -191,25 +208,9 @@ class DocView extends React.Component {
       documentTitle,
       prompt
     } = this.state
-    if (selectedDocument === 'new') {
-      // Create new document on backend and focus it
-      console.log('nw doc chg')
-      applicationApi.createDocument(newTitle, prompt).then(newDoc => {
-        console.log("newDoc", newDoc)
-        this.setState({
-          documents: [...documents, newDoc]
-        })
-        this.onChangeSelectedDocument(newDoc.noteId)
-      }, error => {
-        toaster.danger('Error creating document', {
-          id: 'model-status'
-        })
-        console.error(error)
-      })
-    }
     if (documentTitle !== newTitle) {
-      // Update backend and set frontend too
-      applicationApi.updateDocument(selectedDocument, newTitle, prompt).then(updatedDoc => {
+      // Update backend and set frontend if successful
+      this.updateDocument(selectedDocument, newTitle, prompt).then(updatedDoc => {
         console.log(updatedDoc)
         this.setState({
           documentTitle: newTitle, // TODO
@@ -219,11 +220,6 @@ class DocView extends React.Component {
           }))
         })
         document.title = newTitle
-      }, error => {
-        toaster.danger('Error updating document', {
-          id: 'model-status'
-        })
-        console.error(error)
       })
     }
   }, 500)
@@ -234,7 +230,8 @@ class DocView extends React.Component {
     editor.focus()
     delete editor.keyboard.bindings['9'] // 9: Tab
     console.log(this.props)
-    await this.getDocuments()
+    let documents = await this.getDocuments()
+    if (documents) this.setState({ documents })
     
   }
   render() {

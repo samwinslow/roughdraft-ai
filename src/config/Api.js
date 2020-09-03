@@ -11,6 +11,11 @@ const server = axios.create()
 server.defaults.baseURL = secrets.LAMBDA_SERVER_URL
 server.defaults.timeout = 0
 
+const headers = (accessToken) => ({
+  Authorization: `Bearer ${accessToken}`,
+  'Content-Type': 'application/json'
+})
+
 class Api {
   __printAuth = async () => {
     const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
@@ -29,14 +34,23 @@ class Api {
     }
     return result
   }
+  createDocument = async (title, content) => {
+    // Creates document for specified key with content.
+    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
+    const { data } = await server.post('/doc',
+      {
+        title,  
+        content
+      }, {
+        headers: headers(accessToken)
+      })
+    return data
+  }
   getDocuments = async () => {
     // Returns list of document keys and metadata from the API.
     const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
     const { data } = await server.get('/docs', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
+      headers: headers(accessToken)
     })
     return data
   }
@@ -44,39 +58,20 @@ class Api {
     // Gets document content for specified key.
     const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
     const { data } = await server.get('/doc/' + noteId, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    return data
-  }
-  createDocument = async (title, content) => {
-    // Creates document for specified key with content.
-    const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
-    const { data } = await server.post('/doc', {
-      title,  
-      content
-      }, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
+      headers: headers(accessToken)
     })
     return data
   }
   updateDocument = async (noteId, title, content) => {
     // Set content of document with specified key.
     const accessToken = (await Auth.currentSession()).getIdToken().jwtToken
-    const { data } = await server.put('/doc/' + noteId, {
-        title,
+    const { data } = await server.put('/doc/' + noteId,
+      {
+        title,  
         content
       }, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
+        headers: headers(accessToken)
+      })
     return data
   }
   deleteDocument = async (noteId) => {
