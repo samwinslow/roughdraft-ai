@@ -190,7 +190,7 @@ class DocView extends React.Component {
     this.setState({
       prompt: content
     })
-    this.setRemoteContent(selectedDocument, null, content)
+    this.setRemoteContent(selectedDocument, this.state.documentTitle, content)
     if (delta.ops[delta.ops.length - 1].insert === '/') {
       //TODO switch to special insert mode
     }
