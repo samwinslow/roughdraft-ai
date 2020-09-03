@@ -13,56 +13,6 @@ import {
 import { Link } from 'react-router-dom'
 import Amplify, { Auth } from 'aws-amplify'
 
-const Container = styled.div`
-  font-size: ${theme.type.base.fontSize};
-  color: ${theme.colors.text};
-  background-color: ${theme.colors.accent};
-  padding: 5rem 1rem 3rem 1rem;
-  width: 18rem;
-  height: 100vh;
-  box-sizing: border-box;
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`
-const Section = styled.section`
-  max-width: 12rem;
-`
-const Dropdown = styled(TextDropdownButton)`
-  font-family: ${theme.type.base.fontFamily};
-  margin-left: 1rem;
-`
-const ListItem = styled(Menu.Item)`
-  width: 14rem;
-  cursor: pointer;
-  border-radius: 0.25rem;
-  &:hover {
-    background-color: ${theme.colors.accent};
-  }
-  &:focus {
-    background-color: ${theme.colors.accent};
-    border: none;
-    outline: none;
-  }
-`
-const ListItemTitle = styled.div`
-  font-family: ${theme.type.base.fontFamily};
-  font-size: 1rem;
-  width: 13rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: ${props => props.primary ? theme.colors.primary : theme.colors.text};
-  font-weight: ${props => props.active || props.primary ? 600 : 400};
-`
-const RouterLink = styled(Link)`
-  text-decoration: none;
-  color: ${theme.colors.text};
-`
-
 class Sidebar extends React.Component {
   state = {
     selectedSource: ''
@@ -116,5 +66,54 @@ class Sidebar extends React.Component {
   }
 }
 
+const Container = styled.div`
+  font-size: ${theme.type.base.fontSize};
+  color: ${theme.colors.text};
+  background-color: ${theme.colors.accent};
+  padding: 5rem 1rem 3rem 1rem;
+  width: 18rem;
+  height: 100vh;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`
+const Section = styled.section`
+  max-width: 12rem;
+`
+const Dropdown = styled(TextDropdownButton)`
+  font-family: ${theme.type.base.fontFamily};
+  margin-left: 1rem;
+`
+const ListItem = styled(Menu.Item)`
+  width: 14rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  &:hover {
+    background-color: ${theme.colors.accent};
+  }
+  &:focus {
+    background-color: ${theme.colors.accent};
+    border: none;
+    outline: none;
+  }
+`
+const ListItemTitle = styled.div`
+  font-family: ${theme.type.base.fontFamily};
+  font-size: 1rem;
+  width: 13rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: ${props => props.primary ? theme.colors.primary : theme.colors.text};
+  font-weight: ${props => props.active || props.primary ? 600 : 400};
+`
+const RouterLink = styled(Link)`
+  text-decoration: none;
+  color: ${theme.colors.text};
+`
 
 export default Sidebar;

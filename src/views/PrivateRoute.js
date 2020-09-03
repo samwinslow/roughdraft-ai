@@ -11,7 +11,7 @@ class PrivateRoute extends React.Component {
   render() {
     const View = this.props.view
     const { user } = this.props
-    return user ? <View user={user} /> : <Redirect to="/" />
+    return user ? <Route {...this.props} render={(props) => <View user={user} {...props} />}></Route> : <Redirect to="/" />
   }
 }
 

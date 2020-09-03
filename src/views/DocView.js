@@ -1,6 +1,5 @@
 import React from 'react'
 import '../App.css'
-import annyang from 'annyang'
 import Api from '../config/Api.js'
 import debounce from 'lodash/debounce'
 import ReactQuill from 'react-quill'
@@ -18,10 +17,12 @@ import {
   RefreshIcon,
   IconButton,
   Text,
-  Switch,
   toaster
 } from 'evergreen-ui'
-import RecognitionButton from '../components/RecognitionButton'
+import {
+  Redirect,
+  Link
+} from 'react-router-dom'
 
 const commands = {
   'hello': () => console.log('called')
@@ -35,36 +36,31 @@ class DocView extends React.Component {
     this.quillRef = React.createRef()
   }
   state = {
-    documents: [
-      {
-        title: 'Hello World',
-        id: '4648ef'
-      },
-      {
-        title: 'Document two',
-        id: '45d1c0'
-      },
-      {
-        title: 'The Communist Manifesto',
-        id: '6fb6e'
-      },
-    ],
+    documents: [],
     message: '',
     prompt: initialPromptState,
     selectedSource: 'Personal Style',
     maxCharacters: 140,
     seed: getSeed(),
-    recognitionStatus: 'disabled', // 'disabled', 'pending', 'enabled', 'error'
-    ttsEnabled: false,
-    selectedVoice: 'Matthew',
-    selectedDocument: '4648ef',
+    selectedDocument: 'new',
     documentTitle: 'New Document'
   }
 
-  onChangeSelectedDocument = (id) => {
+  onChangeSelectedDocument = async (noteId) => {
+    const { editor } = this.quillRef.current
+    try {
+      let result = await applicationApi.getDocument(noteId)
+      console.log(result)
+    } catch (err) {
+      toaster.danger('Error getting doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
     this.setState({
-      selectedDocument: id
+      selectedDocument: noteId
     })
+    editor.focus()
   }
 
   onEditorChange = (content, delta, source, editor) => {
@@ -126,43 +122,6 @@ class DocView extends React.Component {
     })
   }
 
-  onTtsChange = () => {
-    const { ttsEnabled } = this.state
-    this.setState({
-      ttsEnabled: !ttsEnabled
-    })
-  }
-
-  onVoiceChange = (selected) => {
-    this.setState({
-      selectedVoice: selected
-    })
-  }
-
-  onRecognitionButtonClick = () => {
-    const { recognitionStatus } = this.state
-    switch (recognitionStatus) {
-      case 'disabled':
-        this.setState({ recognitionStatus: 'pending' })
-        return this.enableSpeechRecognition(true).then(success => {
-          this.setState({ recognitionStatus: 'enabled' })
-        }, err => {
-          this.setState({ recognitionStatus: 'error' })
-        })
-      case 'enabled':
-        this.setState({ recognitionStatus: 'pending' })
-        return this.enableSpeechRecognition(false).then(success => {
-          this.setState({ recognitionStatus: 'disabled' })
-        }, err => {
-          this.setState({ recognitionStatus: 'error' })
-        })
-    }
-  }
-
-  enableSpeechRecognition = async (status = true) => {
-    return true //TODO
-  }
-
   queryModel = async () => {
     const { editor } = this.quillRef.current
     const { maxCharacters, seed } = this.state
@@ -188,70 +147,97 @@ class DocView extends React.Component {
     }
   }
 
-  // speakMessage = async (options = { omit: null }) => {
-  //   const { message } = this.state
-  //   var input = message
-  //   if (options.omit) {
-  //     input = message.replace(options.omit, '')
-  //   }
-  //   const { data } = await speech.post('/speak', {
-  //     text: input,
-  //     voice: 'Matthew'
-  //   })
-  //   if (data.url) {
-  //     annyang.abort()
-  //     let audio = new Audio(data.url)
-  //     audio.addEventListener('ended', () => {
-  //       annyang.resume()
-  //     })
-  //     audio.play()
-  //   }
-  //   console.log(data)
-  // }
+  createDocument = async () => {
+    try {
+      let result = await applicationApi.createDocument('abcdef','Test content')
+      console.log(result)
+    } catch (err) {
+      toaster.danger('Error creating doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
+  }
+
+  getDocuments = async () => {
+    try {
+      let documents = await applicationApi.getDocuments()
+      console.log(documents)
+      this.setState({ documents })
+    } catch (err) {
+      toaster.danger('Error getting doc', {
+        id: 'model-status'
+      })
+      console.log(err)
+    }
+  }
 
   setDocumentTitle = debounce(newTitle => {
-    const { selectedDocument, documents } = this.state
-    this.setState({
-      documentTitle: newTitle, // TODO
-      documents: documents.map(document => ({
-        ...document,
-        title: document.id === selectedDocument ? newTitle : document.title
-      }))
-    })
-    document.title = newTitle
+    let {
+      selectedDocument,
+      documents,
+      documentTitle,
+      prompt
+    } = this.state
+    if (selectedDocument === 'new') {
+      // Create new document on backend and focus it
+      console.log('nw doc chg')
+      applicationApi.createDocument(newTitle, prompt).then(newDoc => {
+        console.log("newDoc", newDoc)
+        this.setState({
+          documents: [...documents, newDoc]
+        })
+        this.onChangeSelectedDocument(newDoc.noteId)
+      }, error => {
+        toaster.danger('Error creating document', {
+          id: 'model-status'
+        })
+        console.error(error)
+      })
+    }
+    if (documentTitle !== newTitle) {
+      // Update backend and set frontend too
+      applicationApi.updateDocument(selectedDocument, newTitle, prompt).then(updatedDoc => {
+        console.log(updatedDoc)
+        this.setState({
+          documentTitle: newTitle, // TODO
+          documents: documents.map(document => ({
+            ...document,
+            title: document.noteId === selectedDocument ? newTitle : document.title
+          }))
+        })
+        document.title = newTitle
+      }, error => {
+        toaster.danger('Error updating document', {
+          id: 'model-status'
+        })
+        console.error(error)
+      })
+    }
   }, 500)
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const { editor } = this.quillRef.current
+    const { params } = this.props.match
     editor.focus()
-    annyang.debug()
-    annyang.addCommands(commands)
-    // annyang.start()
-    annyang.addCallback('result', (phrases) => {
-      this.setState({
-        prompt: phrases[0]
-      })
-      this.queryModel()
-    })
-    // Unset default behaviors for keypresses
     delete editor.keyboard.bindings['9'] // 9: Tab
+    console.log(this.props)
+    await this.getDocuments()
+    
   }
   render() {
     const {
       documents,
       selectedDocument,
       documentTitle,
-      message,
       prompt,
       selectedSource,
       maxCharacters,
       seed,
-      recognitionStatus,
-      ttsEnabled,
-      selectedVoice,
     } = this.state
     const {
-      user
+      user,
+      match
     } = this.props
     const activityGroups = [
       {
@@ -304,50 +290,31 @@ class DocView extends React.Component {
               </>
             )
           },
+          {
+            title: 'print auth TEMP',
+            component: (
+              <IconButton
+                icon={RefreshIcon}
+                height={24}
+                style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
+                onClick={() => applicationApi.__printAuth()} />
+            )
+          },
+          {
+            title: 'link',
+            component: (
+              <Link to={`/doc/otherId`}>Link</Link>
+            )
+          },
         ]
       },
-      {
-        title: 'Speech Input',
-        children: [
-          {
-            title: 'Recognition',
-            component: (<RecognitionButton status={recognitionStatus} onClick={this.onRecognitionButtonClick} />)
-          },
-          {
-            title: 'Speak Result',
-            component: (<Switch checked={ttsEnabled} onChange={this.onTtsChange} height={20}></Switch>)
-          },
-          {
-            title: 'Voice',
-            component: (
-              <Popover
-                position={Position.BOTTOM_LEFT}
-                content={
-                  <Menu>
-                    <Menu.OptionsGroup
-                      style={{ fontFamily: `${theme.type.base.fontFamily} !important`}}
-                      options={[
-                        { label: 'Matthew', value: 'Matthew' },
-                        { label: 'Joanna', value: 'Joanna' }
-                      ]}
-                      selected={selectedVoice}
-                      onChange={this.onVoiceChange}
-                    />
-                  </Menu>
-                }
-              >
-                <TextDropdownButton style={{ fontFamily: theme.type.base.fontFamily}}>{selectedVoice}</TextDropdownButton>
-              </Popover>
-            )
-          }
-        ]
-      }
     ]
 
     return (
       <div className="DocView" onKeyDown={this.onKeyDown} style={{
         height: '100vh',
       }}>
+        <Redirect to={`/doc/${selectedDocument}`} />
         <Sidebar
           user={user}
           documents={documents}
