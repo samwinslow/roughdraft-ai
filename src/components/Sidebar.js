@@ -27,6 +27,7 @@ class Sidebar extends React.Component {
     const {
       user,
       documents, 
+      createNewDocument,
       onChangeSelectedDocument,
       selectedDocument
     } = this.props
@@ -39,6 +40,7 @@ class Sidebar extends React.Component {
             <DocumentList
               documents={documents}
               selectedDocument={selectedDocument}
+              createNewDocument={createNewDocument}
               onChangeSelectedDocument={onChangeSelectedDocument}
             />
           )}

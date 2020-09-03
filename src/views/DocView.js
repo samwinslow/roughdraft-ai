@@ -42,25 +42,33 @@ class DocView extends React.Component {
     selectedSource: 'Personal Style',
     maxCharacters: 140,
     seed: getSeed(),
-    selectedDocument: 'new',
+    selectedDocument: '',
+    editorState: 'start', // enum 'start', 'editor', 'loading'
     documentTitle: 'New Document'
   }
 
   onChangeSelectedDocument = async (noteId) => {
     const { editor } = this.quillRef.current
     try {
+      editor.blur()
+      this.setState({
+        editorState: 'loading'
+      })
       let result = await applicationApi.getDocument(noteId)
-      console.log(result)
+      this.setState({
+        selectedDocument: noteId,
+        prompt: result.content,
+      })
     } catch (err) {
       toaster.danger('Error getting doc', {
         id: 'model-status'
       })
       console.log(err)
+    } finally {
+      this.setState({
+        editorState: 'editor'
+      })
     }
-    this.setState({
-      selectedDocument: noteId
-    })
-    editor.focus()
   }
 
   onEditorChange = (content, delta, source, editor) => {
@@ -145,6 +153,10 @@ class DocView extends React.Component {
       })
       console.log(err)
     }
+  }
+
+  createNewDocument = async () => {
+    console.log('yeet')
   }
 
   createDocument = async () => {
@@ -234,6 +246,7 @@ class DocView extends React.Component {
       selectedSource,
       maxCharacters,
       seed,
+      editorState
     } = this.state
     const {
       user,
@@ -314,11 +327,11 @@ class DocView extends React.Component {
       <div className="DocView" onKeyDown={this.onKeyDown} style={{
         height: '100vh',
       }}>
-        <Redirect to={`/doc/${selectedDocument}`} />
         <Sidebar
           user={user}
           documents={documents}
           selectedDocument={selectedDocument}
+          createNewDocument={this.createNewDocument}
           onChangeSelectedDocument={this.onChangeSelectedDocument}
         />
         <ReactQuill
@@ -339,6 +352,7 @@ class DocView extends React.Component {
           onChange={this.onEditorChange}
           onChangeSelection={this.onEditorChangeSelection}
           onKeyDown={this.onEditorKeyDown}
+          readOnly={editorState !== 'editor'}
         />
         <ActivityBar
           groups={activityGroups}
