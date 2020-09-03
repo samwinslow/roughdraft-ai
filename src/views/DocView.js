@@ -20,7 +20,6 @@ import {
   toaster
 } from 'evergreen-ui'
 import {
-  Redirect,
   Link
 } from 'react-router-dom'
 
@@ -173,24 +172,24 @@ class DocView extends React.Component {
   }
 
   onEditorChange = (content, delta, source, editor) => {
+    this.setState({
+      prompt: content
+    })
     const { selectedDocument } = this.state
     if (content === '<p><br></p>') {
       content = initialPromptState
     }
+    let title = this.state.documentTitle
     let titleMatch = content.match(/^(<h1>.*<\/h1>)/)
     if(titleMatch) {
-      let title = editor.getText().split('\n')[0]
+      title = editor.getText().split('\n')[0]
       if (!title.replace(/\s/g,'').length) title = 'New Document'
       this.setDocumentTitle(title.substring(0, 140))
     }
-    this.setState({
-      prompt: content
-    })
-    this.setRemoteContent(selectedDocument, this.state.documentTitle, content)
+    this.setRemoteContent(selectedDocument, title, content)
     if (delta.ops[delta.ops.length - 1].insert === '/') {
       //TODO switch to special insert mode
     }
-    // console.log(delta, content)
   }
 
   createNewDocument = async () => {
@@ -222,30 +221,22 @@ class DocView extends React.Component {
   
   setRemoteContent = debounce((noteId, title, content) => {
     this.updateDocument(noteId, title, content)
-  }, 1000)
+  }, 500, false)
 
-  setDocumentTitle = debounce(newTitle => {
+  setDocumentTitle = (newTitle) => {
     let {
       selectedDocument,
-      documents,
-      documentTitle,
-      prompt
+      documents
     } = this.state
-    if (documentTitle !== newTitle) {
-      // Update backend and set frontend if successful
-      this.updateDocument(selectedDocument, newTitle, prompt).then(updatedDoc => {
-        console.log(updatedDoc)
-        this.setState({
-          documentTitle: newTitle, // TODO
-          documents: documents.map(document => ({
-            ...document,
-            title: document.noteId === selectedDocument ? newTitle : document.title
-          }))
-        })
-        document.title = newTitle
-      })
-    }
-  }, 500)
+    this.setState({
+      documentTitle: newTitle,
+      documents: documents.map(document => ({
+        ...document,
+        title: document.noteId === selectedDocument ? newTitle : document.title
+      }))
+    })
+    document.title = newTitle
+  }
 
   componentDidMount = async () => {
     const { editor } = this.quillRef.current
