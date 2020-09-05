@@ -14,6 +14,7 @@ class DocumentList extends React.Component {
     const {
       documents,
       createNewDocument,
+      deleteDocument,
       onChangeSelectedDocument,
       selectedDocument
     } = this.props
@@ -42,7 +43,7 @@ class DocumentList extends React.Component {
                 appearance="minimal"
                 icon={TrashIcon}
                 height={20}
-                onClick={() => console.log('ayo')} />
+                onClick={() => deleteDocument(document.noteId)} />
             </ListItem>
           ))}
         </div>

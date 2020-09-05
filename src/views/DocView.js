@@ -111,18 +111,6 @@ class DocView extends React.Component {
     }
   }
 
-  createDocument = async (title, content) => {
-    try {
-      let result = await applicationApi.createDocument(title, content)
-      return result
-    } catch (err) {
-      toaster.danger('Error creating doc', {
-        id: 'model-status'
-      })
-      return { status: false }
-    }
-  }
-
   getDocuments = async () => {
     try {
       let documents = await applicationApi.getDocuments()
@@ -216,6 +204,20 @@ class DocView extends React.Component {
       this.setState({
         editorState: 'editor'
       })
+    }
+  }
+
+  deleteDocument = async (noteId) => {
+    try {
+      await applicationApi.deleteDocument(noteId)
+      this.setState({
+        documents: this.state.documents.filter(d => d.noteId !== noteId)
+      })
+    } catch (err) {
+      toaster.danger('Error deleting doc', {
+        id: 'model-status'
+      })
+      console.log(err)
     }
   }
   
@@ -343,6 +345,7 @@ class DocView extends React.Component {
           documents={documents}
           selectedDocument={selectedDocument}
           createNewDocument={this.createNewDocument}
+          deleteDocument={this.deleteDocument}
           onChangeSelectedDocument={this.onChangeSelectedDocument}
         />
         <ReactQuill

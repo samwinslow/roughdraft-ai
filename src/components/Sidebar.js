@@ -28,6 +28,7 @@ class Sidebar extends React.Component {
       user,
       documents, 
       createNewDocument,
+      deleteDocument,
       onChangeSelectedDocument,
       selectedDocument
     } = this.props
@@ -41,6 +42,7 @@ class Sidebar extends React.Component {
               documents={documents}
               selectedDocument={selectedDocument}
               createNewDocument={createNewDocument}
+              deleteDocument={deleteDocument}
               onChangeSelectedDocument={onChangeSelectedDocument}
             />
           )}
