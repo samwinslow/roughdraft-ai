@@ -7,6 +7,7 @@ import 'react-quill/dist/quill.bubble.css'
 import theme from '../constants/theme'
 import Sidebar from '../components/Sidebar'
 import ActivityBar from '../components/ActivityBar'
+import styled from 'styled-components'
 import { diff, getSeed } from '../util'
 import {
   Menu,
@@ -17,7 +18,8 @@ import {
   RefreshIcon,
   IconButton,
   Text,
-  toaster
+  toaster,
+  Spinner
 } from 'evergreen-ui'
 import {
   Link
@@ -143,18 +145,22 @@ class DocView extends React.Component {
         editorState: 'loading'
       })
       let result = await applicationApi.getDocument(noteId)
-      this.setState({
-        selectedDocument: noteId,
-        prompt: result.content,
-      })
+      if (result) {
+        this.setState({
+          selectedDocument: noteId,
+          prompt: result.content,
+          editorState: 'editor'
+        })
+      } else {
+        throw new Error('Error getting doc')
+      }
     } catch (err) {
       toaster.danger('Error getting doc', {
         id: 'model-status'
       })
-      console.log(err)
-    } finally {
       this.setState({
-        editorState: 'editor'
+        selectedDocument: '',
+        editorState: 'start'
       })
     }
   }
@@ -211,7 +217,9 @@ class DocView extends React.Component {
     try {
       await applicationApi.deleteDocument(noteId)
       this.setState({
-        documents: this.state.documents.filter(d => d.noteId !== noteId)
+        documents: this.state.documents.filter(d => d.noteId !== noteId),
+        selectedDocument: '',
+        editorState: 'start'
       })
     } catch (err) {
       toaster.danger('Error deleting doc', {
@@ -248,7 +256,7 @@ class DocView extends React.Component {
     console.log(this.props)
     let documents = await this.getDocuments()
     if (documents) this.setState({ documents })
-    
+    if (params.noteId && params.noteId !== 'new') await this.onChangeSelectedDocument(params.noteId)
   }
   render() {
     const {
@@ -326,16 +334,9 @@ class DocView extends React.Component {
                 onClick={() => applicationApi.__printAuth()} />
             )
           },
-          {
-            title: 'link',
-            component: (
-              <Link to={`/doc/otherId`}>Link</Link>
-            )
-          },
         ]
       },
     ]
-
     return (
       <div className="DocView" onKeyDown={this.onKeyDown} style={{
         height: '100vh',
@@ -348,19 +349,32 @@ class DocView extends React.Component {
           deleteDocument={this.deleteDocument}
           onChangeSelectedDocument={this.onChangeSelectedDocument}
         />
+        { (editorState === 'loading') && (
+          <PlaceholderQuill>
+            <Spinner marginX="auto" marginY={120} />
+          </PlaceholderQuill>
+        )}
+        { (editorState === 'start') && (
+          <PlaceholderQuill>
+            <h1>Welcome! Let’s get drafting.</h1>
+            <ul>
+              <li>Click <a href="#" onClick={this.createNewDocument}>New Document</a> or select one of your existing docs</li>
+              <li>Press <code>Tab</code> to autocomplete using the AI assistant.</li>
+            </ul>
+            <p>Assistant Settings</p>
+            <ul>
+              <li><b>Source</b>: You’ll need to be on a paid plan to use a custom model.</li>
+              <li><b>Max Characters</b>: How many characters should the AI fill in each time?</li>
+              <li><b>Seed</b>: Shuffle to add randomness. Useful if the AI is repeating itself.</li>
+            </ul>
+          </PlaceholderQuill>
+        )}
         <ReactQuill
           ref={this.quillRef}
           theme="bubble"
           style={{
-            fontSize: theme.type.base.fontSize,
-            fontFamily: theme.type.base.fontFamily,
-            color: theme.colors.text,
-            lineHeight: 1.618,
-            height: '100vh',
-            boxSizing: 'border-box',
-            padding: '0 5rem',
-            width: 'calc(100vw - 36rem)',
-            margin: '0 18rem'
+            ...centerColumnStyle,
+            display: editorState === 'editor' ? 'block' : 'none'
           }}
           value={prompt}
           onChange={this.onEditorChange}
@@ -378,5 +392,56 @@ class DocView extends React.Component {
     )
   }
 }
+
+const centerColumnStyle = {
+  fontSize: theme.type.base.fontSize,
+  fontFamily: theme.type.base.fontFamily,
+  color: theme.colors.text,
+  lineHeight: 1.618,
+  height: '100vh',
+  boxSizing: 'border-box',
+  padding: '0 5rem',
+  width: 'calc(100vw - 36rem)',
+  margin: '0 18rem'
+}
+const PlaceholderQuill = styled.div`
+  font-size: ${theme.type.base.fontSize};
+  font-family: ${theme.type.base.fontFamily};
+  color: ${theme.colors.text};
+  line-height: 1.618;
+  box-sizing: border-box;
+  padding: 5rem;
+  width: calc(100vw - 36rem);
+  margin: 0 18rem;
+  h1 {
+    font-family: ${theme.type.mono.fontFamily};
+  }
+  a {
+    color: ${theme.colors.primary};
+    text-decoration: none;
+    &:link {
+      color: ${theme.colors.primary};
+    }
+    &:hover {
+      color: ${theme.colors.primary};
+      text-decoration: underline;
+    }
+    &:active {
+      color: ${theme.colors.primary};
+    }
+    &:visited {
+      color: ${theme.colors.primary};
+    }
+  }
+  code {
+    font-size: 0.9rem;
+    padding: 0.05rem 0.15rem;
+    border: 1px solid ${theme.colors.accentDarker};
+    border-radius: 0.25rem;
+    font-family: ${theme.type.mono.fontFamily};
+    font-weight: 500;
+    background-color: ${theme.colors.accent};
+  }
+`
 
 export default DocView
