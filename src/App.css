@@ -41,11 +41,6 @@ body {
   opacity: 0.5;
 }
 
-.ql-bubble .ql-editor *:first-child {
+.ql-bubble .ql-editor h1:first-of-type {
   margin-top: 5rem;
 }
-
-.ql-bubble .ql-editor *:last-child {
-  margin-bottom: 5rem;
-}
-

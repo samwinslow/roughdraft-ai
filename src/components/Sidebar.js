@@ -27,6 +27,8 @@ class Sidebar extends React.Component {
     const {
       user,
       documents, 
+      createNewDocument,
+      deleteDocument,
       onChangeSelectedDocument,
       selectedDocument
     } = this.props
@@ -34,11 +36,13 @@ class Sidebar extends React.Component {
     return (
       <Container>
         <Section>
-          <BrandTitle />
+          <BrandTitle href="/doc/" />
           { documents && (
             <DocumentList
               documents={documents}
               selectedDocument={selectedDocument}
+              createNewDocument={createNewDocument}
+              deleteDocument={deleteDocument}
               onChangeSelectedDocument={onChangeSelectedDocument}
             />
           )}
@@ -80,6 +84,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `
 const Section = styled.section`
   max-width: 12rem;

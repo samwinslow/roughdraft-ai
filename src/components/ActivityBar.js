@@ -1,8 +1,36 @@
 import React from 'react'
 import theme from '../constants/theme'
 import styled from 'styled-components'
-import ToolList from './ToolList'
 import { Menu } from 'evergreen-ui'
+
+class ActivityBar extends React.Component {
+  render () {
+    const { groups } = this.props
+    return (
+      <Container>
+        <Section>
+          <Menu>
+            { groups.map(group => (
+              <Menu.Group>
+                <SectionTitle>{group.title}</SectionTitle>
+                { group.children.map(item => (
+                  <ActivityItem>
+                    <ActivityItemTitle>{item.title}</ActivityItemTitle>
+                    <ActivityItemComponent>
+                      {item.component && (
+                        item.component
+                      )}
+                    </ActivityItemComponent>
+                  </ActivityItem>
+                ))}
+              </Menu.Group>
+            ))}
+          </Menu>
+        </Section>
+      </Container>
+    )
+  }
+}
 
 const Container = styled.div`
   font-size: ${theme.type.base.fontSize};
@@ -44,35 +72,5 @@ const ActivityItemComponent = styled.span`
   position: absolute;
   right: 0;
 `
-
-class ActivityBar extends React.Component {
-  render () {
-    const { groups } = this.props
-    return (
-      <Container>
-        <Section>
-          <Menu>
-            { groups.map(group => (
-              <Menu.Group>
-                <SectionTitle>{group.title}</SectionTitle>
-                { group.children.map(item => (
-                  <ActivityItem>
-                    <ActivityItemTitle>{item.title}</ActivityItemTitle>
-                    <ActivityItemComponent>
-                      {item.component && (
-                        item.component
-                      )}
-                    </ActivityItemComponent>
-                  </ActivityItem>
-                ))}
-              </Menu.Group>
-            ))}
-          </Menu>
-        </Section>
-      </Container>
-    )
-  }
-}
-
 
 export default ActivityBar;
