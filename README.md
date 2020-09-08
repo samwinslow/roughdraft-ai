@@ -17,8 +17,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/samwinslow/roughdraft-ai">
+    <img src="src/assets/icon-144w.png" alt="Logo" width="144" height="144">
   </a>
 
   <h3 align="center">roughdraft</h3>
@@ -167,7 +167,7 @@ Project Link: [https://github.com/samwinslow/roughdraft-ai](https://github.com/s
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/samwinslow/roughdraft-ai">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
