@@ -103,7 +103,7 @@ yarn start
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/samwinslow/speech-nlp-test/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/samwinslow/roughdraft-ai/issues) for a list of proposed features (and known issues).
 
 
 
@@ -132,20 +132,20 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Your Name - [@sambwinslow](https://twitter.com/sambwinslow) - samwinslow `at` nyu `.` edu
 
-Project Link: [https://github.com/samwinslow/speech-nlp-test](https://github.com/samwinslow/speech-nlp-test)
+Project Link: [https://github.com/samwinslow/roughdraft-ai](https://github.com/samwinslow/roughdraft-ai)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
-[contributors-url]: https://github.com/samwinslow/speech-nlp-test/graphs/contributors
+[contributors-url]: https://github.com/samwinslow/roughdraft-ai/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=flat-square
-[forks-url]: https://github.com/samwinslow/speech-nlp-test/network/members
+[forks-url]: https://github.com/samwinslow/roughdraft-ai/network/members
 [stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=flat-square
-[stars-url]: https://github.com/samwinslow/speech-nlp-test/stargazers
+[stars-url]: https://github.com/samwinslow/roughdraft-ai/stargazers
 [issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
-[issues-url]: https://github.com/samwinslow/speech-nlp-test/issues
+[issues-url]: https://github.com/samwinslow/roughdraft-ai/issues
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
-[license-url]: https://github.com/samwinslow/speech-nlp-test/blob/master/LICENSE.txt
+[license-url]: https://github.com/samwinslow/roughdraft-ai/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/samuel-winslow-b4a76084/
 [product-screenshot]: images/screenshot.png<!-- PROJECT SHIELDS -->
@@ -253,7 +253,7 @@ yarn start
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/samwinslow/speech-nlp-test/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/samwinslow/roughdraft-ai/issues) for a list of proposed features (and known issues).
 
 
 
@@ -282,20 +282,20 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Your Name - [@sambwinslow](https://twitter.com/sambwinslow) - samwinslow `at` nyu `.` edu
 
-Project Link: [https://github.com/samwinslow/speech-nlp-test](https://github.com/samwinslow/speech-nlp-test)
+Project Link: [https://github.com/samwinslow/roughdraft-ai](https://github.com/samwinslow/roughdraft-ai)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
-[contributors-url]: https://github.com/samwinslow/speech-nlp-test/graphs/contributors
+[contributors-url]: https://github.com/samwinslow/roughdraft-ai/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=flat-square
-[forks-url]: https://github.com/samwinslow/speech-nlp-test/network/members
+[forks-url]: https://github.com/samwinslow/roughdraft-ai/network/members
 [stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=flat-square
-[stars-url]: https://github.com/samwinslow/speech-nlp-test/stargazers
+[stars-url]: https://github.com/samwinslow/roughdraft-ai/stargazers
 [issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
-[issues-url]: https://github.com/samwinslow/speech-nlp-test/issues
+[issues-url]: https://github.com/samwinslow/roughdraft-ai/issues
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
-[license-url]: https://github.com/samwinslow/speech-nlp-test/blob/master/LICENSE.txt
+[license-url]: https://github.com/samwinslow/roughdraft-ai/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/samuel-winslow-b4a76084/
 [product-screenshot]: images/screenshot.png
