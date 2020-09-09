@@ -402,7 +402,7 @@ const centerColumnStyle = {
   boxSizing: 'border-box',
   padding: '0 5rem',
   width: 'calc(100vw - 36rem)',
-  margin: '0 18rem'
+  margin: '0 18rem',
 }
 const PlaceholderQuill = styled.div`
   font-size: ${theme.type.base.fontSize};

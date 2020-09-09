@@ -31,6 +31,10 @@ body {
   margin-bottom: 1rem;
 }
 
+.ql-bubble .ql-editor p {
+  margin-bottom: 0.618rem !important;
+}
+
 .ql-bubble .ql-editor::before {
   font-family: 'IBM Plex Mono', Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;
   font-size: 2rem;
