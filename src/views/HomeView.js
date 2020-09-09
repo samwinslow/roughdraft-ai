@@ -25,7 +25,7 @@ class HomeView extends React.Component {
       <div className="HomeView">
         <Header user={user} />
         <HeroSection backgroundColor={theme.colors.primary}>
-          <h1>For illiterate essay writers... or anyone who needs a little help</h1>
+          <h1>An AI-powered text editor that finishes your sentences</h1>
           <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>
         </HeroSection>
         <FlexSection>
@@ -34,7 +34,7 @@ class HomeView extends React.Component {
             <h1><WavyText>Writers’ block</WavyText>, meet AI</h1>
             <p>Even the best writers get stuck. When you can’t think of how to start your next sentence, try using a super-smart AI that suggests what to say.</p>
             <p>Sound complicated? Roughdraft makes it easy.</p>
-            <StyledButton height={48} appearance="minimal" color={theme.colors.primary}>Get Started</StyledButton>
+            <StyledButton height={48} appearance="minimal" color={theme.colors.primary} href="https://samwinslow.typeform.com/to/xBMZ0XKz">Get Started</StyledButton>
           </SubSection>
           <SubSection backgroundColor={theme.colors.lightblue} color={theme.colors.text} flex={1}>
             <h1>Get started in 3 steps</h1>
@@ -54,7 +54,7 @@ class HomeView extends React.Component {
             </ol>
           </SubSection>
         </FlexSection>
-        <FlexSection>
+        <FlexSection id="pricing">
           <PriceSection backgroundColor={theme.colors.red} flex={1}>
             <h1><WavyText decorationColor={theme.colors.yellow}>Unlimited</WavyText></h1>
             <ul>
@@ -66,7 +66,7 @@ class HomeView extends React.Component {
             <PriceBox>
               <h2>$25/month</h2>
               <h3>For 3 months, or $33/month</h3>
-              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background>Get Started</StyledButton>
+              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background href="https://samwinslow.typeform.com/to/xBMZ0XKz">Get Started</StyledButton>
             </PriceBox>
           </PriceSection>
           <PriceSection backgroundColor={chroma(theme.colors.red).brighten(0.5)} flex={1}>
@@ -79,7 +79,7 @@ class HomeView extends React.Component {
             <PriceBox>
               <h2>$20/month</h2>
               <h3>Cancel at any time</h3>
-              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background>Get Started</StyledButton>
+              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background href="https://samwinslow.typeform.com/to/xBMZ0XKz">Get Started</StyledButton>
             </PriceBox>
           </PriceSection>
           <PriceSection backgroundColor={chroma(theme.colors.red).brighten(1)} flex={1}>
@@ -91,7 +91,7 @@ class HomeView extends React.Component {
             <PriceBox>
               <h2>$0</h2>
               <h3>Free as in beer</h3>
-              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background>Get Started</StyledButton>
+              <StyledButton height={32} appearance="minimal" color={theme.colors.background} background href="https://samwinslow.typeform.com/to/xBMZ0XKz">Get Started</StyledButton>
             </PriceBox>
           </PriceSection>
         </FlexSection>
@@ -185,8 +185,14 @@ const WavyText = styled.strong`
   text-decoration-color: ${props => props.decorationColor ? props.decorationColor : theme.colors.red};
   -webkit-text-decoration-color: ${theme.colors.red};
 `
-const StyledButton = styled(Button)`
+const StyledButton = styled.a`
+  text-decoration: none;
   font-family: ${theme.type.base.fontFamily};
+  font-weight: 500;
+  padding: ${props => props.height ? `${props.height / 4}px ${props.height / 2}px` : `24px 48px`};
+  display: inline-block;
+  margin: ${props => props.height ? `${props.height / 8}px 0` : `24px 0`};
+  border-radius: ${props => props.height ? `${props.height / 12}px` : `4px`};
   color: ${props => props.color ? props.color : theme.colors.primary};
   background-color: ${props => props.background ? chroma(props.color ? props.color : theme.colors.primary).alpha(0.15) : 'transparent'};
   &:hover {

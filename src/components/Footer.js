@@ -44,8 +44,8 @@ class Footer extends React.Component {
           <TabItem is="a" href="/terms" id={1} isSelected={false}>
             Terms of Service
           </TabItem>
-          <TabItem is="a" href="/doc" id={1} isSelected={false}>
-            Log In / Sign Up
+          <TabItem is="a" href="https://samwinslow.typeform.com/to/xBMZ0XKz" id={1} isSelected={false}>
+            Request Access
           </TabItem>
         </Navigation>
       </StyledFooter>
