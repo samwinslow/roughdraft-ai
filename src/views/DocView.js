@@ -19,7 +19,8 @@ import {
   IconButton,
   Text,
   toaster,
-  Spinner
+  Spinner,
+  DownloadIcon
 } from 'evergreen-ui'
 import {
   Link
@@ -248,6 +249,11 @@ class DocView extends React.Component {
     document.title = newTitle
   }
 
+  makeMarkdown = async () => {
+    const { editor } = this.quillRef.current
+    // turndown.to //TODO
+  }
+
   componentDidMount = async () => {
     const { editor } = this.quillRef.current
     const { params } = this.props.match
@@ -324,16 +330,26 @@ class DocView extends React.Component {
               </>
             )
           },
-          {
-            title: 'print auth TEMP',
-            component: (
-              <IconButton
-                icon={RefreshIcon}
-                height={24}
-                style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
-                onClick={() => applicationApi.__printAuth()} />
-            )
-          },
+          // { // TODO implement feature
+          //   title: 'Download as Markdown',
+          //   component: (
+          //     <IconButton
+          //       icon={DownloadIcon}
+          //       height={24}
+          //       style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
+          //       onClick={() => applicationApi.__printAuth()} />
+          //   )
+          // },
+          // { // DEBUG
+          //   title: 'print auth TEMP',
+          //   component: (
+          //     <IconButton
+          //       icon={RefreshIcon}
+          //       height={24}
+          //       style={{ display: 'inline-flex', marginLeft: '0.5rem' }}
+          //       onClick={() => applicationApi.__printAuth()} />
+          //   )
+          // },
         ]
       },
     ]
