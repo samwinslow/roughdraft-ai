@@ -25,7 +25,7 @@ class HomeView extends React.Component {
       <div className="HomeView">
         <Header user={user} />
         <HeroSection backgroundColor={theme.colors.primary}>
-          <h1>An AI-powered text editor that finishes your sentences</h1>
+          <h1>Deadline? Out of ideas? Write with Roughdraft.</h1>
           <p>Roughdraft is an AI writing assistant that learns about your topic &amp; writing style.</p>
         </HeroSection>
         <FlexSection>
