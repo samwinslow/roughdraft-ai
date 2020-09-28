@@ -38,10 +38,10 @@ class Header extends React.Component {
           <TabItem is="a" href="/" id={1} isSelected={true}>
             Home
           </TabItem>
-          <TabItem is="a" href="#" id={1} isSelected={false}>
+          {/* <TabItem is="a" href="#" id={1} isSelected={false}>
             Demo
-          </TabItem>
-          <TabItem is="a" href="#" id={1} isSelected={false}>
+          </TabItem> */}
+          <TabItem is="a" href="#pricing" id={1} isSelected={false}>
             Pricing
           </TabItem>
           { user ? (
@@ -49,8 +49,8 @@ class Header extends React.Component {
               Go to Editor &nbsp; <DocumentOpenIcon />
             </TabItem>
           ) : (
-            <TabItem is="a" href="#" id={1} isSelected={false} primary onClick={() => Auth.federatedSignIn()}>
-              Log In / Sign Up
+            <TabItem is="a" id={1} isSelected={false} primary /*onClick={() => Auth.federatedSignIn()}*/ href="https://samwinslow.typeform.com/to/xBMZ0XKz">
+              Request Access
             </TabItem>
           )}
         </Navigation>
